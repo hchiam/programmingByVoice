@@ -14,9 +14,9 @@ def parse(command, labelOutput):
     checkIfCreatingSomething = re.match(r'.* create .*', command, re.I)
     if checkIfCreatingSomething:
         for keyword in createCommandsList:
-            matchFound = re.match( r'.* (create )?(a(n)? )?' + keyword +' (.*?) .*', command, re.I)
+            matchFound = re.match( r'.* (create )?(a(n)? )?' + keyword +' (.*) .*', command, re.I)
             if matchFound:
-                name = matchFound.group(4)
+                name = camelCase(matchFound.group(4))
                 if keyword == "variable":
                     output = createVariable(name, labelOutput)
                 elif keyword == "function":
@@ -40,6 +40,11 @@ def parse(command, labelOutput):
                         output = removeTab(labelOutput)
                     break
                 matchFound = re.match( r'.* (a(n)? )?tab(s)? ' + keyword + '.*', command, re.I)
+        else:
+            checkForLiteralTyping = re.match(r'.* (literally )?type (.*) please', command, re.I)
+            if checkForLiteralTyping:
+                literalText = checkForLiteralTyping.group(2)
+                output = literallyType(literalText, labelOutput)
     return output
 
 def createFile(name, labelOutput):
@@ -65,3 +70,13 @@ def addTab(labelOutput):
 
 def removeTab(labelOutput):
     return labelOutput.rstrip('\t')
+
+def literallyType(literalText, labelOutput):
+    return labelOutput + literalText
+
+def camelCase(name):
+    words = name.split(" ")
+    name = words[0]
+    for word in words[1:]:
+        name += word.capitalize()
+    return name

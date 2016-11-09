@@ -27,25 +27,36 @@ function checkValidCommand(command) {
 function identifyCommand(command) {
     var labelOutput = document.getElementById("outputStr").innerText;
     var name = "";
-    var checkIfCreatingSomething = command.match(/.* create (a(n)? )?(.+) (.+) .*/);
-    if (checkIfCreatingSomething) {
-        command = checkIfCreatingSomething[3];
-        name = camelCase(checkIfCreatingSomething[4]);
+    var createCommandsList = ["variable", "function", "file", "import"];
+    for (i=0; i<createCommandsList.length; i++) {
+        var commandWord = createCommandsList[i];
+        var checkIfCreatingSomething = command.match(new RegExp(".* create (a(n)? )?" + commandWord + " (.+) please"));
+        if (checkIfCreatingSomething) {
+            command = commandWord;
+            name = camelCase(checkIfCreatingSomething[3]);
+            return [command, name];
+        }
+    }
+    // if didn't return values yet, check these other possible commands:
+    var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
+    if (checkIfEditingTabs) {
+        var keyWord =  checkIfEditingTabs[1];
+        if (keyWord === "increase" || keyWord === "right" || keyWord === "more" || keyWord === "add") {
+            command = "addTab";
+        } else if (keyWord === "decrease" || keyWord === "left" || keyWord === "less" || keyWord === "subtract" || keyWord === "remove" || keyWord === "delete"){
+            command = "removeTab";
+        }
     } else {
-        var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
-        if (checkIfEditingTabs) {
-            var keyWord =  checkIfEditingTabs[1];
-            if (keyWord === "increase" || keyWord === "right" || keyWord === "more" || keyWord === "add") {
-                command = "addTab";
-            } else if (keyWord === "decrease" || keyWord === "left" || keyWord === "less" || keyWord === "subtract" || keyWord === "remove" || keyWord === "delete"){
-                command = "removeTab";
-            }
+        var checkForLiteralTyping = command.match(/.* (literally )?type (.+) please/);
+        if (checkForLiteralTyping) {
+            var literalText = checkForLiteralTyping[2];
+            command = "literallyType";
+            name = literalText;
         } else {
-            var checkForLiteralTyping = command.match(/.* (literally )?type (.+) please/);
-            if (checkForLiteralTyping) {
-                var literalText = checkForLiteralTyping[2];
-                command = "literallyType";
-                name = literalText;
+            var checkIfImporting = command.match(/.* import (.+) please/);
+            if (checkIfImporting) {
+                command = "import";
+                name = camelCase(checkIfImporting[1]);
             }
         }
     }

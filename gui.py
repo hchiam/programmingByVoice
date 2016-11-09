@@ -3,8 +3,8 @@ import brain # the connection to brain.py
 
 def parseCommand(command):
     # check that sentence entered is "computer [...] please"
-    firstWord = command.split(" ")[0]
-    lastWord = command.split(" ")[-1]
+    firstWord = command.split(" ")[0].lower()
+    lastWord = command.split(" ")[-1].lower()
     if firstWord == "computer" and lastWord == "please" and len(command) > 3:
         # get "brain" to run command, update output text, and clear the sentence that was entered
         output = brain.parse(command, labelOutput["text"])

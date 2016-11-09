@@ -40,7 +40,7 @@ function checkValidCommand(command) {
 function identifyCommand(command) {
     var labelOutput = document.getElementById("outputStr").innerText;
     var name = "";
-    var createCommandsList = ["variable", "function", "file", "import", "loop"];
+    var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
     for (i=0; i<createCommandsList.length; i++) {
         var commandWord = createCommandsList[i];
         var checkIfCreatingSomething = command.match(new RegExp(".* create (a(n)? )?" + commandWord + " (with )?(.+) please"));
@@ -93,7 +93,7 @@ function runCommand([command, name]) {
         output = removeTab(labelOutput);
     } else if (command === "literallyType") {
         output = literallyType(name, labelOutput);
-    } else if (command === "loop") {
+    } else if (command === "loop" || command === "for loop") {
         output = createLoop(name, labelOutput);
     }
     return output;

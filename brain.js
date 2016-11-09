@@ -1,5 +1,7 @@
 var currentTabs = 0;
 var editedInputAlready = false;
+var fullOutputString = ""; // see if this will help properly retain tabs
+var searchWord = ""; // to be able to edit inside functions, etc.
 
 // parseCommand is the main function here in the brain, and calls the other functions
 function parseCommand() {
@@ -38,13 +40,13 @@ function checkValidCommand(command) {
 function identifyCommand(command) {
     var labelOutput = document.getElementById("outputStr").innerText;
     var name = "";
-    var createCommandsList = ["variable", "function", "file", "import"];
+    var createCommandsList = ["variable", "function", "file", "import", "loop"];
     for (i=0; i<createCommandsList.length; i++) {
         var commandWord = createCommandsList[i];
-        var checkIfCreatingSomething = command.match(new RegExp(".* create (a(n)? )?" + commandWord + " (.+) please"));
+        var checkIfCreatingSomething = command.match(new RegExp(".* create (a(n)? )?" + commandWord + " (with )?(.+) please"));
         if (checkIfCreatingSomething) {
             command = commandWord;
-            name = camelCase(checkIfCreatingSomething[3]);
+            name = camelCase(checkIfCreatingSomething[4]);
             return [command, name];
         }
     }
@@ -91,6 +93,8 @@ function runCommand([command, name]) {
         output = removeTab(labelOutput);
     } else if (command === "literallyType") {
         output = literallyType(name, labelOutput);
+    } else if (command === "loop") {
+        output = createLoop(name, labelOutput);
     }
     return output;
 }
@@ -102,7 +106,6 @@ function createVariable(name, labelOutput) {
 
 function createFunction(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    currentTabs += 1;
     return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n";
 }
 
@@ -148,6 +151,11 @@ function createFile() {
 function createImport(name) {
     var labelOutput = document.getElementById("outputStr").innerText;
     return "import " + name + "\n" + labelOutput;
+}
+
+function createLoop(name, labelOutput) {
+    var tabs = "\t".repeat(currentTabs);
+    return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
 }
 
 function camelCase(name) {

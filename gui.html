@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <input id="inputStr" type="text" oninput="parseCommand();"></input>
-        <br>
-        <label id="outputStr"></label>
+    <head>
+        <link rel="stylesheet" src="style.css">
+        <!--for bootstrap styles-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    </head>
+    <body style="background-color: black;">
+        <div style="margin-top: 20px;">
+            <div id="inputBox" style="float:left; margin-left:100px;">
+                <input id="inputStr" type="text" oninput="parseCommand();" placeholder="Tap Here. Start Dictation."></input>
+            </div>
+            <div id="outputBox" style="margin-left: 300px;">
+                <button id='createFile'>Create File</button>
+                <br>
+                <label id="outputStr" style="color: lime;"></label>
+                <br>
+                <button id='createFile2' style="visibility:hidden;">Create File</button>
+            </div>
+        </div>
         <script type="text/javascript" src="brain.js" ></script>
+        <script>
+            document.getElementById('createFile').addEventListener('click', createFile);
+            document.getElementById('createFile2').addEventListener('click', createFile);
+        </script>
     </body>
 </html>

@@ -1,4 +1,5 @@
 var currentTabs = 0;
+var editedInputAlready = false;
 
 // parseCommand is the main function here in the brain, and calls the other functions
 function parseCommand() {
@@ -10,6 +11,16 @@ function parseCommand() {
         // identify command, run command, update output text, and clear the sentence that was entered
         document.getElementById("outputStr").innerText = runCommand(identifyCommand(command));
         document.getElementById("inputStr").value = "";
+    }
+    // make 2nd button visible if displayed text is getting long
+    var labelOutput = document.getElementById("outputStr").innerText;
+    var numberOfLines = labelOutput.split("\n").length;
+    if (numberOfLines>10) {
+        document.getElementById("createFile2").style.visibility = "visible";
+    }
+    if (editedInputAlready === false) {
+        editedInputAlready = true;
+        document.getElementById("inputStr").placeholder = "";
     }
 }
 
@@ -71,7 +82,7 @@ function runCommand([command, name]) {
     } else if (command === "function") {
         output = createFunction(name, labelOutput);
     } else if (command === "file") {
-        createFile(name, labelOutput);
+        createFile();
     } else if (command === "import") {
         output = createImport(name, labelOutput);
     } else if (command === "addTab") {
@@ -92,7 +103,7 @@ function createVariable(name, labelOutput) {
 function createFunction(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
     currentTabs += 1;
-    return labelOutput + tabs + "function " + name + "(" + "){\n" + tabs + "\t\n}\n";
+    return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n";
 }
 
 function addTab(labelOutput) {
@@ -110,15 +121,29 @@ function literallyType(literalText, labelOutput) {
     return labelOutput + tabs + literalText;
 }
 
-function createFile(name, labelOutput) {
-    alert("got in");
-    var fso = new ActiveXObject("Scripting.FileSystemObject");
-    alert("got here");
-    var a = fso.CreateTextFile("c:\\testfile.txt", true);
-    a.WriteLine("This is a test.");
-    a.Close();
-    alert("got to end");
+function createFile() {
+    // need to get content directly from document element because a button uses this function too
+    // (cannot include parameters in function called by event listener that was added to the button)
+    var content = document.getElementById("outputStr").innerText;
+    window.open('data:text/txt;charset=utf-8,' + escape(content));
 }
+
+// some commented-out code for future reference (how do I programmatically choose file name?)
+
+//function exportToTxt() {
+//    var txt = "Col1,Col2,Col3\nval1,val2,val3";
+//    window.open('data:text/txt;charset=utf-8,' + escape(txt));
+//}
+
+//document.getElementById('createFile').onclick = function() {                
+//    var fileName = "name";
+//    var content = "labelOutput";
+//    var contentAsTxtData = "data:application/txt;charset=utf-8," + content;
+//    this.href = contentAsTxtData;
+//    this.target = "_blank"; // open in new tab or window, depending on browser
+//    this.download = fileName +".txt";
+//    alert("got here");
+//};
 
 function createImport(name) {
     var labelOutput = document.getElementById("outputStr").innerText;

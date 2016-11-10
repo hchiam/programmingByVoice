@@ -106,7 +106,7 @@ function createVariable(name, labelOutput) {
 
 function createFunction(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n";
+    return labelOutput + "\n" + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n";
 }
 
 function addTab(labelOutput) {
@@ -115,8 +115,14 @@ function addTab(labelOutput) {
 }
 
 function removeTab(labelOutput) {
-    currentTabs -= 1;
-    return labelOutput.slice(0, -1);
+    if (currentTabs > 0) {
+        currentTabs -= 1;
+    }
+    if (labelOutput[labelOutput.length-1] === "\t") {
+        return labelOutput.slice(0, -1);
+    } else {
+        return labelOutput;
+    }
 }
 
 function literallyType(literalText, labelOutput) {
@@ -155,7 +161,7 @@ function createImport(name) {
 
 function createLoop(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    return labelOutput + "\n" + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
 }
 
 function camelCase(name) {

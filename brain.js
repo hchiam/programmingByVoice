@@ -44,10 +44,10 @@ function identifyCommand(command) {
     var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
     for (i=0; i<createCommandsList.length; i++) {
         var commandWord = createCommandsList[i];
-        var checkIfCreatingSomething = command.match(new RegExp(".* create (a(n)? )?" + commandWord + " (with )?(.+) please"));
+        var checkIfCreatingSomething = command.match(new RegExp(".* (create |add )(a(n)? )?" + commandWord + " (with )?(.+) please"));
         if (checkIfCreatingSomething) {
             command = commandWord;
-            name = camelCase(checkIfCreatingSomething[4]);
+            name = camelCase(checkIfCreatingSomething[5]);
             return [command, name];
         }
     }
@@ -61,6 +61,13 @@ function identifyCommand(command) {
     var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole )?(line |row )please"));
     if (checkIfDeletingLastLine) {
         command = "delete LAST LINE";
+        return [command, name];
+    }
+    // check if editing a function:
+    var checkIfEditingFunction = command.match(new RegExp(".* (change |edit )(that |the )?function (called )?(.+) please"));
+    if (checkIfEditingFunction) {
+        command = "edit FUNCTION";
+        name = camelCase(checkIfEditingFunction[4]);
         return [command, name];
     }
     // if didn't return values yet, check these other possible commands:
@@ -112,6 +119,8 @@ function runCommand([command, name]) {
         output = deleteLastChar(labelOutput);
     } else if (command === "delete LAST LINE") {
         output = deleteLastLine(labelOutput);
+    } else if (command === "edit FUNCTION") {
+        output = editFunction(name, labelOutput);
     }
     return output;
 }
@@ -187,6 +196,37 @@ function deleteLastChar(labelOutput) {
 
 function deleteLastLine(labelOutput) {
     return labelOutput.slice(0, labelOutput.lastIndexOf("\n"));
+}
+
+function editFunction(name, labelOutput) {
+    // initialize variables to fail-safe states:
+    var startBracket = labelOutput.length;
+    var endBracket = labelOutput.length;
+    var newText = "\n\t// add code here\n";
+    // try to find indices of opening and closing brackets of function
+    var foundStartOfFunction = labelOutput.search(new RegExp("function " + name + "\((.*)\)"));
+    if (foundStartOfFunction !== -1) {
+        startBracket = foundStartOfFunction + ("function " + name + "() {").length;
+        //endBracket = foundStartOfFunction + ("function " + name + "() {").length + 1;
+        var restOfText = labelOutput.slice(startBracket+1,labelOutput.length-1);
+        // find end of function (i.e. the last "}" by tracking a count of nested "{"'s to cancel out
+        var curlyBracketCount = 0;
+        for (i=0; i<restOfText.length; i++) {
+            if (restOfText[i] === "}") {
+                if (curlyBracketCount === 0) {
+                    endBracket = i + startBracket+1;
+                    break;
+                } else {
+                    curlyBracketCount -= 1;
+                }
+            }
+            if (restOfText[i] === "{") {
+                curlyBracketCount += 1;
+            }
+        }
+        return labelOutput.slice(0,startBracket) + newText + labelOutput.slice(endBracket,labelOutput.length);
+    }
+    return labelOutput;
 }
 
 function camelCase(name) {

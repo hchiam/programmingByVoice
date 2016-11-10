@@ -40,6 +40,7 @@ function checkValidCommand(command) {
 function identifyCommand(command) {
     var labelOutput = document.getElementById("outputStr").innerText;
     var name = "";
+    // check if creating something:
     var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
     for (i=0; i<createCommandsList.length; i++) {
         var commandWord = createCommandsList[i];
@@ -49,6 +50,18 @@ function identifyCommand(command) {
             name = camelCase(checkIfCreatingSomething[4]);
             return [command, name];
         }
+    }
+    // check if deleting a character:
+    var checkIfDeletingLastChar = command.match(new RegExp(".* delete (that |the )?(last |previous )?(character |letter |number |one )?please"));
+    if (checkIfDeletingLastChar) {
+        command = "delete LAST CHAR";
+        return [command, name];
+    }
+    // check if deleting a line:
+    var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole )?(line |row )please"));
+    if (checkIfDeletingLastLine) {
+        command = "delete LAST LINE";
+        return [command, name];
     }
     // if didn't return values yet, check these other possible commands:
     var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
@@ -95,6 +108,10 @@ function runCommand([command, name]) {
         output = literallyType(name, labelOutput);
     } else if (command === "loop" || command === "for loop") {
         output = createLoop(name, labelOutput);
+    } else if (command === "delete LAST CHAR") {
+        output = deleteLastChar(labelOutput);
+    } else if (command === "delete LAST LINE") {
+        output = deleteLastLine(labelOutput);
     }
     return output;
 }
@@ -162,6 +179,14 @@ function createImport(name) {
 function createLoop(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
     return labelOutput + "\n" + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+}
+
+function deleteLastChar(labelOutput) {
+    return labelOutput.slice(0, -1);
+}
+
+function deleteLastLine(labelOutput) {
+    return labelOutput.slice(0, labelOutput.lastIndexOf("\n"));
 }
 
 function camelCase(name) {

@@ -11,7 +11,7 @@ function parseCommand() {
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, update output text, and clear the sentence that was entered
-        document.getElementById("outputStr").innerText = runCommand(identifyCommand(command));
+        document.getElementById("outputStr").innerText = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
         document.getElementById("inputStr").value = "";
     }
     // make 2nd button visible if displayed text is getting long
@@ -20,6 +20,7 @@ function parseCommand() {
     if (numberOfLines>10) {
         document.getElementById("createFile2").style.visibility = "visible";
     }
+    // remove placeholder text once user starts entering text/commands
     if (editedInputAlready === false) {
         editedInputAlready = true;
         document.getElementById("inputStr").placeholder = "";

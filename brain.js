@@ -128,7 +128,7 @@ function runCommand([command, name]) {
 
 function createVariable(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + name + "\n";
+    return labelOutput + tabs + "var " + name + ";\n";
 }
 
 function createFunction(name, labelOutput) {
@@ -183,7 +183,8 @@ function createFile() {
 
 function createImport(name) {
     var labelOutput = document.getElementById("outputStr").innerText;
-    return "import " + name + "\n" + labelOutput;
+    // return "import " + name + ";\n" + labelOutput;
+    return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n" + labelOutput;
 }
 
 function createLoop(name, labelOutput) {

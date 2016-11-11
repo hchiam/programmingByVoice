@@ -45,7 +45,7 @@ function identifyCommand(command) {
     var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
     for (i=0; i<createCommandsList.length; i++) {
         var commandWord = createCommandsList[i];
-        var checkIfCreatingSomething = command.match(new RegExp(".* (create |add )(a(n)? )?" + commandWord + " (with )?(.+) please"));
+        var checkIfCreatingSomething = command.match(new RegExp(".* (create |add )(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
         if (checkIfCreatingSomething) {
             command = commandWord;
             name = camelCase(checkIfCreatingSomething[5]);

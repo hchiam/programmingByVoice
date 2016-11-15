@@ -16,6 +16,7 @@ function parseCommand() {
         document.getElementById("inputStr").value = "";
         // update line numbers:
         var numLines = document.getElementById("outputStr").innerText.match(/\n/g).length;
+        document.getElementById("lineNumbers").innerText = "";
         for (i=1; i<=numLines; i++) {
             document.getElementById("lineNumbers").innerText += i.toString() + "\n";
         }

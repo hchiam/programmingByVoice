@@ -254,8 +254,8 @@ function deleteLineNumber(name, labelOutput) {
         lineToDelete = parseInt(name);
     }
     // now use that number as the line to delete from labelOutput
-    var indexStart = getSubstringIndex(labelOutput,"\n", lineToDelete - 1);
-    var indexStop = getSubstringIndex(labelOutput,"\n", lineToDelete);
+    var indexStart = getIndexOfNthSubstring(labelOutput,"\n", lineToDelete - 1);
+    var indexStop = getIndexOfNthSubstring(labelOutput,"\n", lineToDelete);
     var splicedOutput = labelOutput.slice(0,indexStart) + labelOutput.slice(indexStop);
     return splicedOutput;
 }
@@ -300,13 +300,12 @@ function camelCase(name) {
     return name;
 }
 
-function getSubstringIndex(str, substring, n) {
-    var times = 0, index = null;
-
+function getIndexOfNthSubstring(str, substring, n) {
+    var times = 0;
+    var index = null;
     while (times < n && index !== -1) {
         index = str.indexOf(substring, index+1);
         times++;
     }
-
     return index;
 }

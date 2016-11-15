@@ -10,9 +10,15 @@ function parseCommand() {
     var checkValid = checkValidCommand(command);
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
-        // identify command, run command, update output text, and clear the sentence that was entered
+        // identify command, run command, and update output text:
         document.getElementById("outputStr").innerText = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
+        // clear the sentence that was entered
         document.getElementById("inputStr").value = "";
+        // update line numbers:
+        var numLines = document.getElementById("outputStr").innerText.match(/\n/g).length;
+        for (i=1; i<=numLines; i++) {
+            document.getElementById("lineNumbers").innerText += i.toString() + "\n";
+        }
     }
     // make 2nd button visible if displayed text is getting long
     var labelOutput = document.getElementById("outputStr").innerText;

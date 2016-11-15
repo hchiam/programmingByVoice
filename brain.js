@@ -17,7 +17,7 @@ function parseCommand() {
         // update line numbers:
         var numLines = document.getElementById("outputStr").innerText.match(/\n/g).length;
         document.getElementById("lineNumbers").innerText = "";
-        for (i=1; i<=numLines; i++) {
+        for (i=1; i<numLines; i++) {
             document.getElementById("lineNumbers").innerText += i.toString() + "\n";
         }
     }
@@ -66,9 +66,15 @@ function identifyCommand(command) {
         return [command, name];
     }
     // check if deleting a line:
-    var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole )?(line |row )please"));
+    var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole |entire )?(line |row )please"));
     if (checkIfDeletingLastLine) {
         command = "delete LAST LINE";
+        return [command, name];
+    }
+    var checkIfDeletingLineNumber = command.match(new RegExp(".* delete (that |the )?(whole | entire )?(line |row )(number )?(.+) please"));
+    if (checkIfDeletingLineNumber) {
+        command = "delete LINE NUMBER";
+        name = camelCase(checkIfDeletingLineNumber[5]);
         return [command, name];
     }
     // check if editing a function:
@@ -127,6 +133,8 @@ function runCommand([command, name]) {
         output = deleteLastChar(labelOutput);
     } else if (command === "delete LAST LINE") {
         output = deleteLastLine(labelOutput);
+    } else if (command === "delete LINE NUMBER") {
+        output = deleteLineNumber(name, labelOutput);
     } else if (command === "edit FUNCTION") {
         output = editFunction(name, labelOutput);
     }
@@ -161,7 +169,7 @@ function removeTab(labelOutput) {
 
 function literallyType(literalText, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + literalText;
+    return labelOutput + tabs + literalText + "\n";
 }
 
 function createFile() {
@@ -207,6 +215,51 @@ function deleteLastLine(labelOutput) {
     return labelOutput.slice(0, labelOutput.lastIndexOf("\n"));
 }
 
+function deleteLineNumber(name, labelOutput) {
+    var digits = {
+        'zero': 0,
+        'one': 1,
+        'two': 2,
+        'three': 3,
+        'four': 4,
+        'five': 5,
+        'six': 6,
+        'seven': 7,
+        'eight': 8,
+        'nine': 9,
+        'ten': 10,
+        'eleven': 11,
+        'twelve': 12,
+        'thirteen': 13,
+        'fourteen': 14,
+        'fifteen': 15,
+        'sixteen': 16,
+        'seventeen': 17,
+        'eighteen': 18,
+        'nineteen': 19,
+        'twenty': 20,
+        'thirty': 30,
+        'forty': 40,
+        'fifty': 50,
+        'sixty': 60,
+        'seventy': 70,
+        'eighty': 80,
+        'ninety': 90
+    };
+    var lineToDelete = -1;
+    // if the string is not a number, then convert it to a number
+    if (isNaN(name)) {
+        lineToDelete = digits[name];
+    } else {
+        lineToDelete = parseInt(name);
+    }
+    // now use that number as the line to delete from labelOutput
+    var indexStart = getSubstringIndex(labelOutput,"\n", lineToDelete - 1);
+    var indexStop = getSubstringIndex(labelOutput,"\n", lineToDelete);
+    var splicedOutput = labelOutput.slice(0,indexStart) + labelOutput.slice(indexStop);
+    return splicedOutput;
+}
+
 function editFunction(name, labelOutput) {
     // initialize variables to fail-safe states:
     var startBracket = labelOutput.length;
@@ -245,4 +298,15 @@ function camelCase(name) {
         name += words[i][0].toUpperCase() + words[i].slice(1);
     }
     return name;
+}
+
+function getSubstringIndex(str, substring, n) {
+    var times = 0, index = null;
+
+    while (times < n && index !== -1) {
+        index = str.indexOf(substring, index+1);
+        times++;
+    }
+
+    return index;
 }

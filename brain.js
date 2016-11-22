@@ -50,17 +50,7 @@ function identifyCommand(command) {
     var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
     var name = "";
     
-    // check if creating something basic:
-    var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
-    for (i=0; i<createCommandsList.length; i++) {
-        var commandWord = createCommandsList[i];
-        var checkIfCreatingSomething = command.match(new RegExp(".* (create |add |insert )(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
-        if (checkIfCreatingSomething) {
-            command = commandWord;
-            name = camelCase(checkIfCreatingSomething[5]);
-            return [command, name];
-        }
-    }
+    // NOTE!  Creating something at a certain line OVERRIDES creating something
     
     // check if creating a line
     var checkIfCreatingLine = command.match(new RegExp(".* (create |add |insert )(a(n)? )?(.+) at (line |row )(number )?(.+) please"));
@@ -79,63 +69,77 @@ function identifyCommand(command) {
             command = "line " + what;
             name = camelCase(line);
             return [command, name];
-        }
-    }
-    
-    // check if deleting a character:
-    var checkIfDeletingLastChar = command.match(new RegExp(".* delete (that |the )?(last |previous )?(character |letter |number |one )?please"));
-    if (checkIfDeletingLastChar) {
-        command = "delete LAST CHAR";
-        return [command, name];
-    }
-    
-    // check if deleting a line:
-    var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole |entire )?(line |row )please"));
-    if (checkIfDeletingLastLine) {
-        command = "delete LAST LINE";
-        return [command, name];
-    }
-    var checkIfDeletingLineNumber = command.match(new RegExp(".* delete (that |the )?(whole | entire )?(line |row )(number )?(.+) please"));
-    if (checkIfDeletingLineNumber) {
-        command = "delete LINE NUMBER";
-        name = camelCase(checkIfDeletingLineNumber[5]);
-        return [command, name];
-    }
-    
-    // check if editing a function:
-    var checkIfEditingFunction = command.match(new RegExp(".* (change |edit )(that |the )?function (called )?(.+) please"));
-    if (checkIfEditingFunction) {
-        command = "edit FUNCTION";
-        name = camelCase(checkIfEditingFunction[4]);
-        return [command, name];
-    }
-    
-    // if didn't return values yet, check these other possible commands:
-    var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
-    if (checkIfEditingTabs) {
-        var keyWord =  checkIfEditingTabs[1];
-        if (keyWord === "increase" || keyWord === "right" || keyWord === "more" || keyWord === "add") {
-            command = "addTab";
-        } else if (keyWord === "decrease" || keyWord === "left" || keyWord === "less" || keyWord === "subtract" || keyWord === "remove" || keyWord === "delete"){
-            command = "removeTab";
-        }
-    } else {
-        var checkForLiteralTyping = command.match(/.* (literally )?type (.+) please/);
-        if (checkForLiteralTyping) {
-            var literalText = checkForLiteralTyping[2];
-            command = "literallyType";
-            name = literalText;
         } else {
-            var checkIfImporting = command.match(/.* import (.+) please/);
-            if (checkIfImporting) {
-                command = "import";
-                name = camelCase(checkIfImporting[1]);
+            
+            // check if creating something basic:
+            var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
+            for (i=0; i<createCommandsList.length; i++) {
+                var commandWord = createCommandsList[i];
+                var checkIfCreatingSomething = command.match(new RegExp(".* (create |add |insert )(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
+                if (checkIfCreatingSomething) {
+                    command = commandWord;
+                    name = camelCase(checkIfCreatingSomething[5]);
+                    return [command, name];
+                }
             }
+            
+            // check if deleting a character:
+            var checkIfDeletingLastChar = command.match(new RegExp(".* delete (that |the )?(last |previous )?(character |letter |number |one )?please"));
+            if (checkIfDeletingLastChar) {
+                command = "delete LAST CHAR";
+                return [command, name];
+            }
+            
+            // check if deleting a line:
+            var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole |entire )?(line |row )please"));
+            if (checkIfDeletingLastLine) {
+                command = "delete LAST LINE";
+                return [command, name];
+            }
+            var checkIfDeletingLineNumber = command.match(new RegExp(".* delete (that |the )?(whole | entire )?(line |row )(number )?(.+) please"));
+            if (checkIfDeletingLineNumber) {
+                command = "delete LINE NUMBER";
+                name = camelCase(checkIfDeletingLineNumber[5]);
+                return [command, name];
+            }
+            
+            // check if editing a function:
+            var checkIfEditingFunction = command.match(new RegExp(".* (change |edit )(that |the )?function (called )?(.+) please"));
+            if (checkIfEditingFunction) {
+                command = "edit FUNCTION";
+                name = camelCase(checkIfEditingFunction[4]);
+                return [command, name];
+            }
+            
+            // if didn't return values yet, check these other possible commands:
+            var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
+            if (checkIfEditingTabs) {
+                var keyWord =  checkIfEditingTabs[1];
+                if (keyWord === "increase" || keyWord === "right" || keyWord === "more" || keyWord === "add") {
+                    command = "addTab";
+                } else if (keyWord === "decrease" || keyWord === "left" || keyWord === "less" || keyWord === "subtract" || keyWord === "remove" || keyWord === "delete"){
+                    command = "removeTab";
+                }
+            } else {
+                var checkForLiteralTyping = command.match(/.* (literally )?type (.+) please/);
+                if (checkForLiteralTyping) {
+                    var literalText = checkForLiteralTyping[2];
+                    command = "literallyType";
+                    name = literalText;
+                } else {
+                    var checkIfImporting = command.match(/.* import (.+) please/);
+                    if (checkIfImporting) {
+                        command = "import";
+                        name = camelCase(checkIfImporting[1]);
+                    }
+                }
+            }
+            
+            // return command ID and parameter "name" ("name" = paramater with meaning given by context)
+            return [command, name];
+            
         }
     }
-    
-    // return command ID and parameter "name" ("name" = paramater with meaning given by context)
-    return [command, name];
 }
 
 function runCommand([command, name]) {
@@ -327,25 +331,29 @@ function editFunction(name, labelOutput) {
     return labelOutput;
 }
 
-function createLine(line, what, labelOutput) {
-    // check whether there are any lines
-    var foundLine = labelOutput.search("\n");
-    var countLines;
-    var indexLine;
-    if (foundLine !== -1) {
-        // find the nth line
-        for (i=0; i<labelOutput.length; i++) {
-            if (labelOutput[i] === "\n") {
-                countLines++;
-                if (countLines === line-1) { // ("-1" because line 1 has no "\n", and line 2 has 1 "\n", etc.)
-                    indexLine = i;
-                    break;
-                }
-            }
-        }
-        return foundLine;//labelOutput.slice(0,indexLine) + what + labelOutput.slice(indexLine + 1,labelOutput.length);
-    }
-    return labelOutput;
+//function createLine(line, what, labelOutput) {
+//    // check whether there are any lines
+//    var foundLine = labelOutput.search("\n");
+//    var countLines;
+//    var indexLine;
+//    if (foundLine !== -1) {
+//        // find the nth line
+//        indexLine = labelOutput.indexOf("\n", line);
+//        return indexLine;//labelOutput.slice(0,indexLine) + what + labelOutput.slice(indexLine + 1,labelOutput.length);
+//    }
+//    return labelOutput;
+//}
+
+function createLine(line, what, text) {
+    // get line to insert at:
+    var indexStart = text.indexOf("\n",line+1);
+    var indexStop = text.indexOf("\n",line+2);
+    // use an almost "recursive" call to create functions:
+    var subCmd = what; // TODO runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
+    // get new text:
+    var tabs = ""; // TODO "\t".repeat(currentTabs);
+    var newText = text.substring(0,indexStart) + "\n" + tabs + subCmd + text.substring(indexStop);
+    return newText;
 }
 
 function camelCase(name) {

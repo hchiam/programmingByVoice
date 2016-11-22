@@ -331,19 +331,6 @@ function editFunction(name, labelOutput) {
     return labelOutput;
 }
 
-//function createLine(line, what, labelOutput) {
-//    // check whether there are any lines
-//    var foundLine = labelOutput.search("\n");
-//    var countLines;
-//    var indexLine;
-//    if (foundLine !== -1) {
-//        // find the nth line
-//        indexLine = labelOutput.indexOf("\n", line);
-//        return indexLine;//labelOutput.slice(0,indexLine) + what + labelOutput.slice(indexLine + 1,labelOutput.length);
-//    }
-//    return labelOutput;
-//}
-
 function createLine(line, what, text) {
     // get line to insert at:
     var indexStart = text.indexOf("\n",line+1);

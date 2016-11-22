@@ -6,4 +6,4 @@ After clicking in the textbox, start up Mac Dictation and say something like "Co
 
 ## main data flow:
 
-Mac Dictation —> gui.html’s inputStr’s oninput —> brain.js’s parseCommand —> checkValidCommand —> identifyCommand —> runCommand —> gui.html’s outputStr
+Mac Dictation —> gui.html’s inputStr’s oninput —> brain.js’s (parseCommand —> checkValidCommand —> identifyCommand —> runCommand) —> gui.html’s outputStr

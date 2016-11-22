@@ -11,18 +11,19 @@ function parseCommand() {
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, and update output text:
-        document.getElementById("outputStr").innerText = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
+        fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
+        document.getElementById("outputStr").innerText = fullOutputString;
         // clear the sentence that was entered
         document.getElementById("inputStr").value = "";
         // update line numbers:
-        var numLines = document.getElementById("outputStr").innerText.match(/\n/g).length;
+        var numLines = fullOutputString.match(/\n/g).length; // document.getElementById("outputStr").innerText.match(/\n/g).length;
         document.getElementById("lineNumbers").innerText = "";
         for (i=1; i<numLines; i++) {
             document.getElementById("lineNumbers").innerText += i.toString() + "\n";
         }
     }
     // make 2nd button visible if displayed text is getting long
-    var labelOutput = document.getElementById("outputStr").innerText;
+    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
     var numberOfLines = labelOutput.split("\n").length;
     if (numberOfLines>10) {
         document.getElementById("createFile2").style.visibility = "visible";
@@ -46,25 +47,48 @@ function checkValidCommand(command) {
 }
 
 function identifyCommand(command) {
-    var labelOutput = document.getElementById("outputStr").innerText;
+    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
     var name = "";
-    // check if creating something:
+    
+    // check if creating something basic:
     var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
     for (i=0; i<createCommandsList.length; i++) {
         var commandWord = createCommandsList[i];
-        var checkIfCreatingSomething = command.match(new RegExp(".* (create |add )(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
+        var checkIfCreatingSomething = command.match(new RegExp(".* (create |add |insert )(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
         if (checkIfCreatingSomething) {
             command = commandWord;
             name = camelCase(checkIfCreatingSomething[5]);
             return [command, name];
         }
     }
+    
+    // check if creating a line
+    var checkIfCreatingLine = command.match(new RegExp(".* (create |add |insert )(a(n)? )?(.+) at (line |row )(number )?(.+) please"));
+    var line, what;
+    if (checkIfCreatingLine) {
+        line = checkIfCreatingLine[7];
+        what = checkIfCreatingLine[4];
+        command = "line " + what;
+        name = camelCase(line);
+        return [command, name];
+    } else {
+        var checkIfCreatingLine_ALT = command.match(new RegExp(".* at (line |row )(number )?(.+) (create |add |insert )(a(n)? )?(.+) please"));
+        if (checkIfCreatingLine_ALT) {
+            line = checkIfCreatingLine_ALT[3];
+            what = checkIfCreatingLine_ALT[7];
+            command = "line " + what;
+            name = camelCase(line);
+            return [command, name];
+        }
+    }
+    
     // check if deleting a character:
     var checkIfDeletingLastChar = command.match(new RegExp(".* delete (that |the )?(last |previous )?(character |letter |number |one )?please"));
     if (checkIfDeletingLastChar) {
         command = "delete LAST CHAR";
         return [command, name];
     }
+    
     // check if deleting a line:
     var checkIfDeletingLastLine = command.match(new RegExp(".* delete (that |the )?(last |previous |whole |entire )?(line |row )please"));
     if (checkIfDeletingLastLine) {
@@ -77,6 +101,7 @@ function identifyCommand(command) {
         name = camelCase(checkIfDeletingLineNumber[5]);
         return [command, name];
     }
+    
     // check if editing a function:
     var checkIfEditingFunction = command.match(new RegExp(".* (change |edit )(that |the )?function (called )?(.+) please"));
     if (checkIfEditingFunction) {
@@ -84,6 +109,7 @@ function identifyCommand(command) {
         name = camelCase(checkIfEditingFunction[4]);
         return [command, name];
     }
+    
     // if didn't return values yet, check these other possible commands:
     var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
     if (checkIfEditingTabs) {
@@ -107,11 +133,13 @@ function identifyCommand(command) {
             }
         }
     }
+    
+    // return command ID and parameter "name" ("name" = paramater with meaning given by context)
     return [command, name];
 }
 
 function runCommand([command, name]) {
-    var labelOutput = document.getElementById("outputStr").innerText;
+    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
     var output = labelOutput;
     if (command === "variable") {
         output = createVariable(name, labelOutput);
@@ -137,8 +165,16 @@ function runCommand([command, name]) {
         output = deleteLineNumber(name, labelOutput);
     } else if (command === "edit FUNCTION") {
         output = editFunction(name, labelOutput);
+    } else if (command.substring(0,5) === "line ") {
+        var line = name;
+        var what = command.substring(5);
+        output = createLine(line, what, labelOutput);
     }
     return output;
+}
+
+function checkWhatCreating(args) {
+    //code
 }
 
 function createVariable(name, labelOutput) {
@@ -148,7 +184,7 @@ function createVariable(name, labelOutput) {
 
 function createFunction(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + "\n" + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n";
+    return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n";
 }
 
 function addTab(labelOutput) {
@@ -175,7 +211,7 @@ function literallyType(literalText, labelOutput) {
 function createFile() {
     // need to get content directly from document element because a button uses this function too
     // (cannot include parameters in function called by event listener that was added to the button)
-    var content = document.getElementById("outputStr").innerText;
+    var content = fullOutputString; // document.getElementById("outputStr").innerText;
     window.open('data:text/txt;charset=utf-8,' + escape(content));
 }
 
@@ -197,7 +233,7 @@ function createFile() {
 //};
 
 function createImport(name) {
-    var labelOutput = document.getElementById("outputStr").innerText;
+    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
     // return "import " + name + ";\n" + labelOutput;
     return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n" + labelOutput;
 }
@@ -212,7 +248,7 @@ function deleteLastChar(labelOutput) {
 }
 
 function deleteLastLine(labelOutput) {
-    return labelOutput.slice(0, labelOutput.lastIndexOf("\n"));
+    return labelOutput.slice(0, fullOutputString.lastIndexOf("\n")); // labelOutput.lastIndexOf("\n"));
 }
 
 function deleteLineNumber(name, labelOutput) {
@@ -291,11 +327,34 @@ function editFunction(name, labelOutput) {
     return labelOutput;
 }
 
+function createLine(line, what, labelOutput) {
+    // check whether there are any lines
+    var foundLine = labelOutput.search("\n");
+    var countLines;
+    var indexLine;
+    if (foundLine !== -1) {
+        // find the nth line
+        for (i=0; i<labelOutput.length; i++) {
+            if (labelOutput[i] === "\n") {
+                countLines++;
+                if (countLines === line-1) { // ("-1" because line 1 has no "\n", and line 2 has 1 "\n", etc.)
+                    indexLine = i;
+                    break;
+                }
+            }
+        }
+        return foundLine;//labelOutput.slice(0,indexLine) + what + labelOutput.slice(indexLine + 1,labelOutput.length);
+    }
+    return labelOutput;
+}
+
 function camelCase(name) {
-    var words = name.split(" ");
-    name = words[0];
-    for (i=1; i<words.length; i++) {
-        name += words[i][0].toUpperCase() + words[i].slice(1);
+    if (name.match(/[a-z]/i)) { // if letters found
+            var words = name.split(" ");
+        name = words[0];
+        for (i=1; i<words.length; i++) {
+            name += words[i][0].toUpperCase() + words[i].slice(1);
+        }
     }
     return name;
 }

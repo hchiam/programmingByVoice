@@ -1,9 +1,11 @@
 var currentTabs = 0;
 var editedInputAlready = false;
-var fullOutputString = ""; // see if this will help properly retain tabs
+var fullOutputString = ""; // to properly retain tabs and newline characters (track this var and update label text to match this var)
+var previousFullOutputString = ""; // to be able to "undo"
+var undoFullOutputString = ""; // to be able to "undo"
 var searchWord = ""; // to be able to edit inside functions, etc.
 
-// parseCommand is the main function here in the brain, and calls the other functions
+// parseCommand() is the main function here in the brain, and calls the other functions
 function parseCommand() {
     // initialize variables
     var command = document.getElementById("inputStr").value;
@@ -11,6 +13,8 @@ function parseCommand() {
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, and update output text:
+        undoFullOutputString = previousFullOutputString; // to be able to "undo"
+        previousFullOutputString = fullOutputString; // to be able to "undo"
         fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
         document.getElementById("outputStr").innerText = fullOutputString + "\r";
         // clear the sentence that was entered
@@ -119,6 +123,14 @@ function identifyCommand(command) {
                 return [command, name];
             }
             
+            // check for undo command:
+            var checkForUndoCmd = command.match(new RegExp(".+ undo (that )?(last one |last thing)?please"));
+            if (checkForUndoCmd) {
+                command = "undo";
+                name = "";
+                return [command, name];
+            }
+            
             // if didn't return values yet, check these other possible commands:
             var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
             if (checkIfEditingTabs) {
@@ -182,7 +194,9 @@ function runCommand([command, name]) {
         output = createLine(line, what, fullOutputString);
     } else if (command === "ADD LAST LINE") {
         output = createLastLine(fullOutputString);
-    } 
+    } else if (command === "undo") {
+        output = undoFullOutputString;
+    }
     return output;
 }
 
@@ -248,7 +262,7 @@ function createFile() {
 function createImport(name) {
     var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
     // return "import " + name + ";\n" + labelOutput;
-    return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n" + labelOutput;
+    return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
 }
 
 function createLoop(name, labelOutput) {

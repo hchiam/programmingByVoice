@@ -17,7 +17,7 @@ function parseCommand() {
         document.getElementById("inputStr").value = "";
         // update line numbers:
         //var numLines = fullOutputString.match(/\n/g).length+1; // document.getElementById("outputStr").innerText.match(/\n/g).length+1;
-        var numLines = fullOutputString.split("\n").length; // labelOutput.split("\n").length;
+        var numLines = fullOutputString.split("\n").length+1; // labelOutput.split("\n").length+1;
         alert(numLines);
         document.getElementById("lineNumbers").innerText = "";
         for (i=1; i<numLines; i++) {

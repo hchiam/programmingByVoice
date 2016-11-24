@@ -193,8 +193,12 @@ function runCommand([command, name]) {
     } else if (command === "ADD LAST LINE") {
         output = createLastLine(fullOutputString);
     } else if (command === "undo") {
-        historyStack.pop();
-        output = historyStack.pop();
+        if (historyStack.length >= 2) {
+            historyStack.pop();
+            output = historyStack.pop();
+        } else { // account for empty stack
+            output = "";
+        }
     }
     return output;
 }
@@ -266,7 +270,7 @@ function createImport(name) {
 
 function createLoop(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + "\n" + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
 }
 
 function deleteLastChar(labelOutput) {

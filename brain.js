@@ -252,7 +252,11 @@ function deleteLastChar(labelOutput) {
 }
 
 function deleteLastLine(labelOutput) {
-    return labelOutput.slice(0, fullOutputString.lastIndexOf("\n")); // labelOutput.lastIndexOf("\n"));
+    if (fullOutputString.lastIndexOf("\n") !== -1) {
+        return labelOutput.slice(0, fullOutputString.lastIndexOf("\n")); // labelOutput.lastIndexOf("\n"));
+    } else {
+        return "";
+    }
 }
 
 function deleteLineNumber(name, labelOutput) {

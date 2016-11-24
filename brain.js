@@ -2,7 +2,6 @@ var currentTabs = 0;
 var editedInputAlready = false;
 var fullOutputString = ""; // see if this will help properly retain tabs
 var searchWord = ""; // to be able to edit inside functions, etc.
-var numLines = 0;
 
 // parseCommand is the main function here in the brain, and calls the other functions
 function parseCommand() {
@@ -18,7 +17,7 @@ function parseCommand() {
         document.getElementById("inputStr").value = "";
         // update line numbers:
         //var numLines = fullOutputString.match(/\n/g).length+1; // document.getElementById("outputStr").innerText.match(/\n/g).length+1;
-        numLines = fullOutputString.split("\n").length+1; // labelOutput.split("\n").length+1;
+        var numLines = fullOutputString.split("\n").length+1; // labelOutput.split("\n").length+1;
         document.getElementById("lineNumbers").innerText = "";
         for (i=1; i<numLines; i++) {
             document.getElementById("lineNumbers").innerText += i.toString() + "\n";
@@ -180,7 +179,8 @@ function runCommand([command, name]) {
         var what = command.substring(5);
         output = createLine(line, what, fullOutputString);
     } else if (command === "ADD LAST LINE") {
-        output = createLine(numLines, "", fullOutputString);
+        var numLines = fullOutputString.split("\n").length+1;
+        output = createLine(numLines-2, "", fullOutputString); // numLines-1 because need to get last index
     } 
     return output;
 }
@@ -345,8 +345,8 @@ function editFunction(name, labelOutput) {
 
 function createLine(line, what, text) {
     // get line to insert at:
-    var indexStart = text.indexOf("\n",line+1);
-    var indexStop = text.indexOf("\n",line+2);
+    var indexStart = getIndexOfNthSubstring(text, "\n", line); //text.indexOf("\n",line+1);
+    var indexStop = getIndexOfNthSubstring(text, "\n", line); //text.indexOf("\n",line+2);
     // use an almost "recursive" sub-call to create functions:
     // TODO var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
     // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call

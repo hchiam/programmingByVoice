@@ -16,22 +16,22 @@ function parseCommand() {
         // clear the sentence that was entered
         document.getElementById("inputStr").value = "";
         // update line numbers:
-        var numLines = fullOutputString.match(/\n/g).length+1; // document.getElementById("outputStr").innerText.match(/\n/g).length+1;
+        //var numLines = fullOutputString.match(/\n/g).length+1; // document.getElementById("outputStr").innerText.match(/\n/g).length+1;
+        var numLines = fullOutputString.split("\n").length; // labelOutput.split("\n").length;
+        alert(numLines);
         document.getElementById("lineNumbers").innerText = "";
         for (i=1; i<numLines; i++) {
             document.getElementById("lineNumbers").innerText += i.toString() + "\n";
         }
-    }
-    // make 2nd button visible if displayed text is getting long
-    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
-    var numberOfLines = labelOutput.split("\n").length;
-    if (numberOfLines>10) {
-        document.getElementById("createFile2").style.visibility = "visible";
-    }
-    // remove placeholder text once user starts entering text/commands
-    if (editedInputAlready === false) {
-        editedInputAlready = true;
-        document.getElementById("inputStr").placeholder = "";
+        // make 2nd button visible if displayed text is getting long
+        if (numLines>10) {
+            document.getElementById("createFile2").style.visibility = "visible";
+        }
+        // remove placeholder text once user starts entering text/commands
+        if (editedInputAlready === false) {
+            editedInputAlready = true;
+            document.getElementById("inputStr").placeholder = "";
+        }
     }
 }
 

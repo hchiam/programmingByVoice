@@ -1,8 +1,7 @@
 var currentTabs = 0;
 var editedInputAlready = false;
 var fullOutputString = ""; // to properly retain tabs and newline characters (track this var and update label text to match this var)
-var previousFullOutputString = ""; // to be able to "undo"
-var undoFullOutputString = ""; // to be able to "undo"
+var historyStack = []; // to be able to "undo"
 var searchWord = ""; // to be able to edit inside functions, etc.
 
 // parseCommand() is the main function here in the brain, and calls the other functions
@@ -13,8 +12,7 @@ function parseCommand() {
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, and update output text:
-        undoFullOutputString = previousFullOutputString; // to be able to "undo"
-        previousFullOutputString = fullOutputString; // to be able to "undo"
+        historyStack.push(fullOutputString);
         fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
         document.getElementById("outputStr").innerText = fullOutputString + "\r";
         // clear the sentence that was entered
@@ -195,7 +193,8 @@ function runCommand([command, name]) {
     } else if (command === "ADD LAST LINE") {
         output = createLastLine(fullOutputString);
     } else if (command === "undo") {
-        output = undoFullOutputString;
+        historyStack.pop();
+        output = historyStack.pop();
     }
     return output;
 }

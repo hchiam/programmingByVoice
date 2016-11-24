@@ -16,7 +16,7 @@ function parseCommand() {
         // clear the sentence that was entered
         document.getElementById("inputStr").value = "";
         // update line numbers:
-        var numLines = fullOutputString.match(/\n/g).length; // document.getElementById("outputStr").innerText.match(/\n/g).length;
+        var numLines = fullOutputString.match(/\n/g).length+1; // document.getElementById("outputStr").innerText.match(/\n/g).length+1;
         document.getElementById("lineNumbers").innerText = "";
         for (i=1; i<numLines; i++) {
             document.getElementById("lineNumbers").innerText += i.toString() + "\n";

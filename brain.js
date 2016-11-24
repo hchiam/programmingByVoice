@@ -54,20 +54,20 @@ function identifyCommand(command) {
     // NOTE!  Creating something at a certain line OVERRIDES creating something
     
     // check if creating something at a specified line:
-    var checkIfCreatingLine = command.match(new RegExp(".+ (create |add |insert )(a(n)? )?(.+) at (line |row )(number )?(.+) please"));
+    var checkIfCreatingLine = command.match(new RegExp(".+ (create |add |insert )(a(n)? )?(.+) (at |in )(line |row )(number )?(.+) please"));
     var line, what;
     if (checkIfCreatingLine) {
-        line = checkIfCreatingLine[7];
+        line = checkIfCreatingLine[8];
         what = checkIfCreatingLine[4];
         command = "line " + what;
         name = camelCase(line);
         return [command, name];
     } else {
         // check if creating something at a specified line (alternate phrasing):
-        var checkIfCreatingLine_ALT = command.match(new RegExp(".+ at (line |row )(number )?(.+) (create |add |insert )(a(n)? )?(.+) please"));
+        var checkIfCreatingLine_ALT = command.match(new RegExp(".+ (at |in )(line |row )(number )?(.+) (create |add |insert )(a(n)? )?(.+) please"));
         if (checkIfCreatingLine_ALT) {
-            line = checkIfCreatingLine_ALT[3];
-            what = checkIfCreatingLine_ALT[7];
+            line = checkIfCreatingLine_ALT[4];
+            what = checkIfCreatingLine_ALT[8];
             command = "line " + what;
             name = camelCase(line);
             return [command, name];

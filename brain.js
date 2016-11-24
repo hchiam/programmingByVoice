@@ -325,8 +325,6 @@ function createLine(line, what, text) {
         // TODO var tabs = "\t".repeat(currentTabs);
         var tabs = "";
         newText = text.substring(0,indexStart) + "\n" + tabs + subCmd + text.substring(indexStop);
-    } else {
-        
     }
     return newText;
 }

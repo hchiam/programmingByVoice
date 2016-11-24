@@ -179,8 +179,7 @@ function runCommand([command, name]) {
         var what = command.substring(5);
         output = createLine(line, what, fullOutputString);
     } else if (command === "ADD LAST LINE") {
-        var numLines = fullOutputString.split("\n").length+1;
-        output = createLine(numLines-2, "", fullOutputString); // numLines-1 because need to get last index
+        output = createLastLine(fullOutputString);
     } 
     return output;
 }
@@ -268,43 +267,9 @@ function deleteLastLine(labelOutput) {
 }
 
 function deleteLineNumber(name, labelOutput) {
-    var digits = {
-        'zero': 0,
-        'one': 1,
-        'two': 2,
-        'three': 3,
-        'four': 4,
-        'five': 5,
-        'six': 6,
-        'seven': 7,
-        'eight': 8,
-        'nine': 9,
-        'ten': 10,
-        'eleven': 11,
-        'twelve': 12,
-        'thirteen': 13,
-        'fourteen': 14,
-        'fifteen': 15,
-        'sixteen': 16,
-        'seventeen': 17,
-        'eighteen': 18,
-        'nineteen': 19,
-        'twenty': 20,
-        'thirty': 30,
-        'forty': 40,
-        'fifty': 50,
-        'sixty': 60,
-        'seventy': 70,
-        'eighty': 80,
-        'ninety': 90
-    };
     var lineToDelete = -1;
     // if the string is not a number, then convert it to a number
-    if (isNaN(name)) {
-        lineToDelete = digits[name];
-    } else {
-        lineToDelete = parseInt(name);
-    }
+    lineToDelete = numberNameToInt(name);
     // now use that number as the line to delete from labelOutput
     var indexStart = getIndexOfNthSubstring(labelOutput,"\n", lineToDelete - 1);
     var indexStop = getIndexOfNthSubstring(labelOutput,"\n", lineToDelete);
@@ -344,17 +309,32 @@ function editFunction(name, labelOutput) {
 }
 
 function createLine(line, what, text) {
-    // get line to insert at:
-    var indexStart = getIndexOfNthSubstring(text, "\n", line); //text.indexOf("\n",line+1);
-    var indexStop = getIndexOfNthSubstring(text, "\n", line); //text.indexOf("\n",line+2);
-    // use an almost "recursive" sub-call to create functions:
-    // TODO var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
-    // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
-    var subCmd = what;
-    // get new text:
+    line = numberNameToInt(line);
+    // check if line exists:
+    var numLines = fullOutputString.split("\n").length+1;
+    var newText = text;
+    if (line < numLines) {
+        // get line to insert at:
+        var indexStart = getIndexOfNthSubstring(text, "\n", line-1); //text.indexOf("\n",line+1);
+        var indexStop = getIndexOfNthSubstring(text, "\n", line-1); //text.indexOf("\n",line+2);
+        // use an almost "recursive" sub-call to create functions:
+        // TODO var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
+        // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
+        var subCmd = what;
+        // get new text:
+        // TODO var tabs = "\t".repeat(currentTabs);
+        var tabs = "";
+        newText = text.substring(0,indexStart) + "\n" + tabs + subCmd + text.substring(indexStop);
+    } else {
+        
+    }
+    return newText;
+}
+
+function createLastLine(text) {
     // TODO var tabs = "\t".repeat(currentTabs);
     var tabs = "";
-    var newText = text.substring(0,indexStart) + "\n" + tabs + subCmd + text.substring(indexStop);
+    var newText = text + "\n." + tabs;
     return newText;
 }
 
@@ -377,4 +357,45 @@ function getIndexOfNthSubstring(str, substring, n) {
         times++;
     }
     return index;
+}
+
+function numberNameToInt(num) {
+    var digits = {
+        'zero': 0,
+        'one': 1,
+        'two': 2,
+        'three': 3,
+        'four': 4,
+        'five': 5,
+        'six': 6,
+        'seven': 7,
+        'eight': 8,
+        'nine': 9,
+        'ten': 10,
+        'eleven': 11,
+        'twelve': 12,
+        'thirteen': 13,
+        'fourteen': 14,
+        'fifteen': 15,
+        'sixteen': 16,
+        'seventeen': 17,
+        'eighteen': 18,
+        'nineteen': 19,
+        'twenty': 20,
+        'thirty': 30,
+        'forty': 40,
+        'fifty': 50,
+        'sixty': 60,
+        'seventy': 70,
+        'eighty': 80,
+        'ninety': 90
+    };
+    var number;
+    // if the string is not a number, then convert it to a number
+    if (isNaN(num)) {
+        number = digits[num];
+    } else {
+        number = parseInt(num);
+    }
+    return number;
 }

@@ -51,7 +51,7 @@ function identifyCommand(command) {
     
     // NOTE!  Creating something at a certain line OVERRIDES creating something
     
-    // check if creating a line
+    // check if creating something at a specified line:
     var checkIfCreatingLine = command.match(new RegExp(".+ (create |add |insert )(a(n)? )?(.+) at (line |row )(number )?(.+) please"));
     var line, what;
     if (checkIfCreatingLine) {
@@ -61,6 +61,7 @@ function identifyCommand(command) {
         name = camelCase(line);
         return [command, name];
     } else {
+        // check if creating something at a specified line (alternate phrasing):
         var checkIfCreatingLine_ALT = command.match(new RegExp(".+ at (line |row )(number )?(.+) (create |add |insert )(a(n)? )?(.+) please"));
         if (checkIfCreatingLine_ALT) {
             line = checkIfCreatingLine_ALT[3];
@@ -82,6 +83,7 @@ function identifyCommand(command) {
                 }
             }
             
+            // check if adding a line at the bottom of the file:
             var checkIfAddingLastLine = command.match(new RegExp(".+ (create |add )(line |row )please"));
             if (checkIfAddingLastLine) {
                 command = "ADD LAST LINE";

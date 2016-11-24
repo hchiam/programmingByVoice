@@ -332,7 +332,7 @@ function createLine(line, what, text) {
 function createLastLine(text) {
     // TODO var tabs = "\t".repeat(currentTabs);
     var tabs = "";
-    var newText = text + "\n." + tabs;
+    var newText = text + "\n" + tabs;
     return newText;
 }
 

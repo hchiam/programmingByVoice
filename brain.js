@@ -180,7 +180,7 @@ function runCommand([command, name]) {
         var what = command.substring(5);
         output = createLine(line, what, fullOutputString);
     } else if (command === "ADD LAST LINE") {
-        output = createLine(numLines-1, "", fullOutputString);
+        output = createLine(numLines, "", fullOutputString);
     } 
     return output;
 }
@@ -345,10 +345,8 @@ function editFunction(name, labelOutput) {
 
 function createLine(line, what, text) {
     // get line to insert at:
-    alert('numLines='+line);
     var indexStart = text.indexOf("\n",line+1);
     var indexStop = text.indexOf("\n",line+2);
-    alert('indexStart='+indexStart+' indexStop='+indexStop);
     // use an almost "recursive" sub-call to create functions:
     // TODO var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
     // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call

@@ -379,16 +379,14 @@ function createLine(line, what, labelOutput) {
         // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
         var subCmd = runCommand(identifyCommand("computer create " + what + " please"));
         // get new labelOutput:
-        // TODO var tabs = "\t".repeat(currentTabs);
-        var tabs = "";
+        var tabs = "\t".repeat(currentTabs);
         newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);
     }
     return newLabelOutput;
 }
 
 function createLastLine(labelOutput) {
-    // TODO var tabs = "\t".repeat(currentTabs);
-    var tabs = "";
+    var tabs = "\t".repeat(currentTabs);
     var newLabelOutput = labelOutput + "\n" + tabs;
     return newLabelOutput;
 }

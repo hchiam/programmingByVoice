@@ -365,32 +365,32 @@ function editFunction(name, labelOutput) {
     return labelOutput;
 }
 
-function createLine(line, what, text) {
+function createLine(line, what, labelOutput) {
     line = numberNameToInt(line);
     // check if line exists:
     var numLines = fullOutputString.split("\n").length+1;
-    var newText = text;
+    var newlabenewLabelOutputlOutput = labelOutput;
     if (line < numLines) {
         // get line to insert at:
-        var indexStart = getIndexOfNthSubstring(text, "\n", line-1); //text.indexOf("\n",line+1);
-        var indexStop = getIndexOfNthSubstring(text, "\n", line-1); //text.indexOf("\n",line+2);
+        var indexStart = getIndexOfNthSubstring(labelOutput, "\n", line-1); //labelOutput.indexOf("\n",line+1);
+        var indexStop = getIndexOfNthSubstring(labelOutput, "\n", line-1); //labelOutput.indexOf("\n",line+2);
         // use an almost "recursive" sub-call to create functions:
         // TODO var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
         // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
-        var subCmd = what;
-        // get new text:
+        var subCmd = runCommand(identifyCommand("computer create " + what + " please"));
+        // get new labelOutput:
         // TODO var tabs = "\t".repeat(currentTabs);
         var tabs = "";
-        newText = text.substring(0,indexStart) + "\n" + tabs + subCmd + text.substring(indexStop);
+        newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);
     }
-    return newText;
+    return newLabelOutput;
 }
 
-function createLastLine(text) {
+function createLastLine(labelOutput) {
     // TODO var tabs = "\t".repeat(currentTabs);
     var tabs = "";
-    var newText = text + "\n" + tabs;
-    return newText;
+    var newLabelOutput = labelOutput + "\n" + tabs;
+    return newLabelOutput;
 }
 
 function hideCommandsList() {

@@ -7,3 +7,5 @@ After clicking in the textbox, start up Mac Dictation and say something like "Co
 ## main data flow:
 
 Mac Dictation —> gui.html’s inputStr’s oninput —> brain.js’s (parseCommand —> checkValidCommand —> identifyCommand —> runCommand) —> gui.html’s outputStr
+
+(style.css is for the styles applied to different elements in gui.html, including important properties like hidden/visibility, opacity of overlapping elements, formatting, etc.)

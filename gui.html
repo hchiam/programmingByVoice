@@ -1,21 +1,48 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" src="style.css">
         <!--for bootstrap styles-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
-    <body style="background-color: black;">
-        <div style="margin-top: 20px;">
+    <body style="background-color:black;">
+        <div id="commandListBox" style="position:absolute; margin-top:20px; margin-left:100px; color:lightblue; visibility:hidden; z-index:1;">
+            <br/>
+            COMMANDS:
+            <br/>
+            "Computer (hide/show) commands please"
+            <br/>
+            "Computer create (a variable/function/etc.) at line (number) please"
+            <br/>
+            "Computer at line (number) create (a variable/function/etc.) please"
+            <br/>
+            "Computer create (a variable/function/file/import/loop) (name) please"
+            <br/>
+            "Computer create line please" (at the bottom of the file)
+            <br/>
+            "Computer delete (the) last character please"
+            <br/>
+            "Computer delete the last line please"
+            <br/>
+            "Computer delete line (number) please"
+            <br/>
+            "Computer undo please"
+            <br/>
+            "Computer (increase/decrease) tab please"
+            <br/>
+            "Computer literally type (...) please"
+            <br/>
+            "Computer import (...) please"
+        </div>
+        <div style="margin-top:20px;">
             <div id="inputBox" style="float:left; margin-left:100px;">
                 <input id="inputStr" type="text" oninput="parseCommand();" placeholder="Tap Here. Start Dictation." autofocus></input>
             </div>
-            <div id="outputBox" style="margin-left: 300px;">
+            <div id="outputBox" style="position:absolute;margin-left:300px; z-index:2;">
                 <button id='createFile'>Create File</button>
                 <br>
                 <div>
-                    <label id="lineNumbers"></label>
-                    <label id="outputStr" style="color: lime;"></label>
+                    <label id="lineNumbers" style="color:yellow; text-align:right;"></label>
+                    <label id="outputStr" style="color:lime;"></label>
                 </div>
                 <br>
                 <button id='createFile2' style="visibility:hidden;">Create File</button>

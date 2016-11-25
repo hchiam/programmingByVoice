@@ -1,8 +1,32 @@
+// setup:
 var currentTabs = 0;
 var editedInputAlready = false;
 var fullOutputString = ""; // to properly retain tabs and newline characters (track this var and update label text to match this var)
 var historyStack = []; // to be able to "undo"
 var searchWord = ""; // to be able to edit inside functions, etc.
+document.getElementById('commandList').innerHTML =
+"<br/>\"Computer...:\
+<br/>...at line (number) create (a variable/function/etc.) please\"<br/>\
+<br/>...create...:\
+<br/>......(a variable/function/etc.) at line (number) please\"\
+<br/>......a variable/function/file/import/loop) (with/named) (name) please\"<br/>\
+<br/>......line please\" (at bottom of file)\
+<br/>\
+<br/>...delete...:\
+<br/>......(the) last character please\"\
+<br/>......the last line please\"\
+<br/>or\
+<br/>......line (number) please\"\
+<br/>\
+<br/>...undo please\"\
+<br/>\
+<br/>...(increase/decrease) tab please\"\
+<br/>\
+<br/>...literally type (…) please\"\
+<br/>\
+<br/>...import (…) please\"";
+
+/*---------------------------------------------------------------------------*/
 
 // parseCommand() is the main function here in the brain, and calls the other functions
 function parseCommand() {
@@ -12,17 +36,17 @@ function parseCommand() {
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, and update output text:
-        historyStack.push(fullOutputString);
+        historyStack.push(fullOutputString); // to be able to "undo"
         fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
         document.getElementById("outputStr").innerText = fullOutputString + "\r";
         // clear the sentence that was entered
         document.getElementById("inputStr").value = "";
         // update line numbers:
-        //var numLines = fullOutputString.match(/\n/g).length+1; // document.getElementById("outputStr").innerText.match(/\n/g).length+1;
-        var numLines = fullOutputString.split("\n").length+1; // labelOutput.split("\n").length+1;
+        var numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
         document.getElementById("lineNumbers").innerText = "";
+        var divider = " |";
         for (i=1; i<numLines; i++) {
-            document.getElementById("lineNumbers").innerText += i.toString() + "\n";
+            document.getElementById("lineNumbers").innerText += i.toString() + divider + "\n";
         }
         // make 2nd button visible if displayed text is getting long
         if (numLines>10) {
@@ -48,7 +72,7 @@ function checkValidCommand(command) {
 }
 
 function identifyCommand(command) {
-    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
+    var labelOutput = fullOutputString;
     var name = "";
     
     // NOTE!  Creating something at a certain line OVERRIDES creating something
@@ -129,6 +153,14 @@ function identifyCommand(command) {
                 return [command, name];
             }
             
+            // check for hide/show commands:
+            var checkForShowHideCmds = command.match(new RegExp(".+ (hide|show) (the|all )?commands (list )?please"));
+            if (checkForShowHideCmds) {
+                command = checkForShowHideCmds[1];
+                name = "";
+                return [command, name];
+            }
+            
             // if didn't return values yet, check these other possible commands:
             var checkIfEditingTabs = command.match(/.* (.*) (a(n)? )?(tab|indent)(s)? .*/);
             if (checkIfEditingTabs) {
@@ -161,7 +193,7 @@ function identifyCommand(command) {
 }
 
 function runCommand([command, name]) {
-    var output = fullOutputString; // document.getElementById("outputStr").innerText;
+    var output = fullOutputString;
     if (command === "variable") {
         output = createVariable(name, fullOutputString);
     } else if (command === "function") {
@@ -199,6 +231,12 @@ function runCommand([command, name]) {
         } else { // account for empty stack
             output = "";
         }
+    } else if (command === "hide") {
+        hideCommandsList();
+        output = fullOutputString;
+    } else if (command === "show") {
+        showCommandsList();
+        output = fullOutputString;
     }
     return output;
 }
@@ -241,7 +279,7 @@ function literallyType(literalText, labelOutput) {
 function createFile() {
     // need to get content directly from document element because a button uses this function too
     // (cannot include parameters in function called by event listener that was added to the button)
-    var content = fullOutputString; // document.getElementById("outputStr").innerText;
+    var content = fullOutputString;
     window.open('data:text/txt;charset=utf-8,' + escape(content));
 }
 
@@ -263,7 +301,7 @@ function createFile() {
 //};
 
 function createImport(name) {
-    var labelOutput = fullOutputString; // document.getElementById("outputStr").innerText;
+    var labelOutput = fullOutputString;
     // return "import " + name + ";\n" + labelOutput;
     return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
 }
@@ -353,6 +391,14 @@ function createLastLine(text) {
     var tabs = "";
     var newText = text + "\n" + tabs;
     return newText;
+}
+
+function hideCommandsList() {
+    document.getElementById('commandListBox').style.visibility = "hidden";
+}
+
+function showCommandsList() {
+    document.getElementById('commandListBox').style.visibility = "visible";
 }
 
 function camelCase(name) {

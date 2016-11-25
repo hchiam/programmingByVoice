@@ -399,6 +399,7 @@ function hideCommandsList() {
 
 function showCommandsList() {
     document.getElementById('commandListBox').style.visibility = "visible";
+    document.getElementById('commandListPrompt').style.visibility = "hidden"; // hide instruction to show commands
 }
 
 function camelCase(name) {

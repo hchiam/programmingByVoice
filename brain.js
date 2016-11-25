@@ -76,14 +76,15 @@ function identifyCommand(command) {
         } else {
             
             // check if creating something basic:
-            var createCommandsList = ["variable", "function", "file", "import", "loop", "for loop"];
+            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file"];
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
-                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert )(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
+                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert )(just )?(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
                 if (checkIfCreatingSomething) {
                     command = commandWord;
-                    name = camelCase(checkIfCreatingSomething[5]);
-                    return [command, name];
+                    name = camelCase(checkIfCreatingSomething[6]);
+                    var justThisElement = (checkIfCreatingSomething[2]==="just ");
+                    return [command, name, justThisElement];
                 }
             }
             
@@ -144,7 +145,7 @@ function identifyCommand(command) {
             if (checkIfEditingTabs) {
                 var keyWord =  checkIfEditingTabs[1];
                 if (keyWord === "increase" || keyWord === "right" || keyWord === "more" || keyWord === "add") {
-                    command = "addTab";
+                    command = "tab";
                 } else if (keyWord === "decrease" || keyWord === "left" || keyWord === "less" || keyWord === "subtract" || keyWord === "remove" || keyWord === "delete"){
                     command = "removeTab";
                 }
@@ -170,24 +171,23 @@ function identifyCommand(command) {
     }
 }
 
-function runCommand([command, name]) {
+function runCommand([command, name, justThisElement]) {
+    alert(justThisElement);
     var output = fullOutputString; // fail-safe to not changing label output in case command run fails
     if (command === "variable") {
-        output = createVariable(name, fullOutputString);
+        output = createVariable(name, fullOutputString, justThisElement);
     } else if (command === "function") {
-        output = createFunction(name, fullOutputString);
-    } else if (command === "file") {
-        createFile();
+        output = createFunction(name, fullOutputString, justThisElement);
+    } else if (command === "tab") {
+        output = addTab(fullOutputString, justThisElement);
     } else if (command === "import") {
-        output = createImport(name, fullOutputString);
-    } else if (command === "addTab") {
-        output = addTab(fullOutputString);
+        output = createImport(name, fullOutputString, justThisElement);
     } else if (command === "removeTab") {
         output = removeTab(fullOutputString);
+    } else if (command === "loop" || command === "for loop") {
+        output = createLoop(name, fullOutputString, justThisElement);
     } else if (command === "literallyType") {
         output = literallyType(name, fullOutputString);
-    } else if (command === "loop" || command === "for loop") {
-        output = createLoop(name, fullOutputString);
     } else if (command === "delete LAST CHAR") {
         output = deleteLastChar(fullOutputString);
     } else if (command === "delete LAST LINE") {
@@ -215,6 +215,8 @@ function runCommand([command, name]) {
     } else if (command === "show") {
         showCommandsList();
         output = fullOutputString;
+    } else if (command === "file") {
+        createFile();
     }
     return output;
 }
@@ -223,22 +225,31 @@ function checkWhatCreating(args) {
     //code
 }
 
-function createVariable(name, labelOutput) {
+function createVariable(name, labelOutput, justThisElement) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + "var " + name + ";\n";
-    //return tabs + "var " + name + ";\n";
+    if (justThisElement) {
+        return tabs + "var " + name + ";\n";
+    } else {
+        return labelOutput + tabs + "var " + name + ";\n";
+    }
 }
 
-function createFunction(name, labelOutput) {
+function createFunction(name, labelOutput, justThisElement) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
-    //return tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
+    if (justThisElement) {
+        return tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
+    } else {
+        return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
+    }
 }
 
-function addTab(labelOutput) {
+function addTab(labelOutput, justThisElement) {
     currentTabs += 1;
-    return labelOutput + "\t";
-    //return "\t";
+    if (justThisElement) {
+        return "\t";
+    } else {
+        return labelOutput + "\t";
+    }
 }
 
 function removeTab(labelOutput) {
@@ -281,17 +292,23 @@ function createFile() {
 //    alert("got here");
 //};
 
-function createImport(name) {
+function createImport(name, justThisElement) {
     var labelOutput = fullOutputString;
     // return "import " + name + ";\n" + labelOutput;
-    return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
-    //return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n";
+    if (justThisElement) {
+        return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n";
+    } else {
+        return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
+    }
 }
 
-function createLoop(name, labelOutput) {
+function createLoop(name, labelOutput, justThisElement) {
     var tabs = "\t".repeat(currentTabs);
-    return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
-    //return tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    if (justThisElement) {
+        return tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    } else {
+        return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    }
 }
 
 function deleteLastChar(labelOutput) {
@@ -360,7 +377,7 @@ function createLine(line, what, labelOutput) {
         // use an almost "recursive" sub-call to create functions:
         // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
         // (like createVariable, createFunction, addTab, createImport, createLoop)
-        var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
+        var subCmd = runCommand(identifyCommand("computer create just" + what + " please")); // "computer create " + what + " please"; //
         // get new labelOutput:
         var tabs = "\t".repeat(currentTabs);
         newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);

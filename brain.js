@@ -172,7 +172,6 @@ function identifyCommand(command) {
 }
 
 function runCommand([command, name, justThisElement]) {
-    alert(justThisElement);
     var output = fullOutputString; // fail-safe to not changing label output in case command run fails
     if (command === "variable") {
         output = createVariable(name, fullOutputString, justThisElement);

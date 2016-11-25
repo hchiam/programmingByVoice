@@ -4,27 +4,6 @@ var editedInputAlready = false;
 var fullOutputString = ""; // to properly retain tabs and newline characters (track this var and update label text to match this var)
 var historyStack = []; // to be able to "undo"
 var searchWord = ""; // to be able to edit inside functions, etc.
-document.getElementById('commandList').innerHTML =
-"<br/>\"Computer...:\
-<br/>...at line (number) create (a variable/function/etc.) please\"<br/>\
-<br/>...create...:\
-<br/>......(a variable/function/etc.) at line (number) please\"\
-<br/>......a variable/function/file/import/loop) (with/named) (name) please\"<br/>\
-<br/>......line please\" (at bottom of file)\
-<br/>\
-<br/>...delete...:\
-<br/>......(the) last character please\"\
-<br/>......the last line please\"\
-<br/>or\
-<br/>......line (number) please\"\
-<br/>\
-<br/>...undo please\"\
-<br/>\
-<br/>...(increase/decrease) tab please\"\
-<br/>\
-<br/>...literally type (…) please\"\
-<br/>\
-<br/>...import (…) please\"";
 
 /*---------------------------------------------------------------------------*/
 
@@ -72,7 +51,6 @@ function checkValidCommand(command) {
 }
 
 function identifyCommand(command) {
-    var labelOutput = fullOutputString;
     var name = "";
     
     // NOTE!  Creating something at a certain line OVERRIDES creating something
@@ -193,7 +171,7 @@ function identifyCommand(command) {
 }
 
 function runCommand([command, name]) {
-    var output = fullOutputString;
+    var output = fullOutputString; // fail-safe to not changing label output in case command run fails
     if (command === "variable") {
         output = createVariable(name, fullOutputString);
     } else if (command === "function") {
@@ -248,16 +226,19 @@ function checkWhatCreating(args) {
 function createVariable(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
     return labelOutput + tabs + "var " + name + ";\n";
+    //return tabs + "var " + name + ";\n";
 }
 
 function createFunction(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
     return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
+    //return tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
 }
 
 function addTab(labelOutput) {
     currentTabs += 1;
     return labelOutput + "\t";
+    //return "\t";
 }
 
 function removeTab(labelOutput) {
@@ -304,11 +285,13 @@ function createImport(name) {
     var labelOutput = fullOutputString;
     // return "import " + name + ";\n" + labelOutput;
     return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
+    //return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n";
 }
 
 function createLoop(name, labelOutput) {
     var tabs = "\t".repeat(currentTabs);
     return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    //return tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
 }
 
 function deleteLastChar(labelOutput) {
@@ -375,9 +358,9 @@ function createLine(line, what, labelOutput) {
         var indexStart = getIndexOfNthSubstring(labelOutput, "\n", line-1); //labelOutput.indexOf("\n",line+1);
         var indexStop = getIndexOfNthSubstring(labelOutput, "\n", line-1); //labelOutput.indexOf("\n",line+2);
         // use an almost "recursive" sub-call to create functions:
-        // TODO var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
         // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
-        var subCmd = runCommand(identifyCommand("computer create " + what + " please"));
+        // (like createVariable, createFunction, addTab, createImport, createLoop)
+        var subCmd = runCommand(identifyCommand("computer create " + what + " please")); // "computer create " + what + " please"; //
         // get new labelOutput:
         var tabs = "\t".repeat(currentTabs);
         newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);

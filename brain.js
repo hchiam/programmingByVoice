@@ -352,7 +352,7 @@ function createLine(line, what, labelOutput) {
     line = numberNameToInt(line);
     // check if line exists:
     var numLines = fullOutputString.split("\n").length+1;
-    var newlabenewLabelOutputlOutput = labelOutput;
+    var newLabelOutput = labelOutput;
     if (line < numLines) {
         // get line to insert at:
         var indexStart = getIndexOfNthSubstring(labelOutput, "\n", line-1); //labelOutput.indexOf("\n",line+1);

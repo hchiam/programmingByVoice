@@ -3,12 +3,14 @@
     <head>
         <!--for bootstrap styles-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+        <!--add this stylesheet after to be able to override styles-->
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-    <body style="background-color:black;">
-        <div id="commandListPrompt" style="position:absolute; margin-top:20px; margin-left:100px; color:grey; font-size:small;">
+    <body>
+        <div id="commandListPrompt">
             <br/>Say "Computer show<br>commands please"<br/>to see all commands.
         </div>
-        <div id="commandListBox" style="position:absolute; margin-top:20px; margin-left:100px; color:lightblue; visibility:hidden; z-index:1;">
+        <div id="commandListBox">
             <br/>
             COMMANDS:
             <br/>
@@ -36,19 +38,19 @@
             <br/>
             "Computer import (...) please"
         </div>
-        <div style="margin-top:20px;">
-            <div id="inputBox" style="float:left; margin-left:100px;">
+        <div id="mainBox">
+            <div id="inputBox">
                 <input id="inputStr" type="text" oninput="parseCommand();" placeholder="Tap Here. Start Dictation." autofocus></input>
             </div>
-            <div id="outputBox" style="position:absolute;margin-left:300px; z-index:2;">
+            <div id="outputBox">
                 <button id='createFile'>Create File</button>
                 <br>
                 <div>
-                    <label id="lineNumbers" style="color:yellow; text-align:right;"></label>
-                    <label id="outputStr" style="color:lime;"></label>
+                    <label id="lineNumbers"></label>
+                    <label id="outputStr"></label>
                 </div>
                 <br>
-                <button id='createFile2' style="visibility:hidden;">Create File</button>
+                <button id='createFile2'>Create File</button>
             </div>
         </div>
         <script type="text/javascript" src="brain.js" ></script>

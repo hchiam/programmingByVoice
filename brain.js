@@ -376,7 +376,7 @@ function createLine(line, what, labelOutput) {
         // use an almost "recursive" sub-call to create functions:
         // TODO try making all other create commands have implicit line number indication "at last line" to be able to do this sub-call
         // (like createVariable, createFunction, addTab, createImport, createLoop)
-        var subCmd = runCommand(identifyCommand("computer create just" + what + " please")); // "computer create " + what + " please"; //
+        var subCmd = runCommand(identifyCommand("computer create just " + what + " please")); // "computer create " + what + " please"; //
         // get new labelOutput:
         var tabs = "\t".repeat(currentTabs);
         newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);

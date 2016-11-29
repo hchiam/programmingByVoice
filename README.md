@@ -1,6 +1,6 @@
 # programmingByVoice
 
-Combine Mac Dictation with a GUI to program code by voice command.
+Combine Mac Dictation with a GUI (Graphical User Interface) to program code by voice command.
 
 ![screenshot_GUI.png](https://github.com/hchiam/programmingByVoice/blob/master/screenshot_GUI.png "Combine Mac Dictation with a GUI to program code by voice command.")
 

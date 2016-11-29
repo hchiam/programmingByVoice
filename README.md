@@ -4,7 +4,7 @@ Combine Mac Dictation with a GUI to program code by voice command.
 
 ![screenshot_GUI.png](https://github.com/hchiam/programmingByVoice/blob/master/screenshot_GUI.png "Combine Mac Dictation with a GUI to program code by voice command.")
 
-To run the code, save both gui.html and brain.js in the same folder, and open up gui.html.
+To run the code, save both gui.html and brain.js in the same folder, and open up gui.html in a web browser.
 After clicking in the textbox, start up Mac Dictation and say something like "Computer create function my function please."
 
 ## main data flow:

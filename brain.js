@@ -31,11 +31,13 @@ function parseCommand() {
         if (numLines>10) {
             document.getElementById("createFile2").style.visibility = "visible";
         }
-        // remove placeholder text once user starts entering text/commands
-        if (editedInputAlready === false) {
-            editedInputAlready = true;
-            document.getElementById("inputStr").placeholder = "";
-        }
+    }
+    // once user starts entering text, remove placeholder text and show some collapsed GUI elements
+    if (editedInputAlready === false) {
+        editedInputAlready = true;
+        document.getElementById("inputStr").placeholder = "";
+        document.getElementById("commandListPrompt").style.visibility = "visible";
+        document.getElementById("createFile").style.visibility = "visible";
     }
 }
 

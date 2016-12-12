@@ -7,8 +7,8 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
-        <div id="commandListPrompt">
-            <br/>Say "Computer show<br>commands please"<br/>to see all commands.
+        <div id="commandListPrompt" style="visibility: collapse;">
+            <br/>Say "Computer show<br/>commands please"<br/>to see all commands.
         </div>
         <div id="commandListBox">
             <br/>
@@ -43,7 +43,7 @@
                 <input id="inputStr" type="text" oninput="parseCommand();" placeholder="Tap Here. Start Dictation." autofocus></input>
             </div>
             <div id="outputBox">
-                <button id='createFile'>Create File</button>
+                <button id='createFile' style="visibility: collapse;">Create File</button>
                 <br>
                 <div>
                     <label id="lineNumbers"></label>

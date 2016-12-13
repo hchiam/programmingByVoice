@@ -58,7 +58,7 @@ function identifyCommand(command) {
     // NOTE!  Creating something at a certain line OVERRIDES creating something
     
     // check if creating something at a specified line:
-    var checkIfCreatingLine = command.match(new RegExp(".+ (create |add |insert )(a(n)? )?(.+) (at |in )(line |row )(number )?(.+) please"));
+    var checkIfCreatingLine = command.match(new RegExp(".+ (create |add |insert |make )(a(n)? )?(.+) (at |in )(line |row )(number )?(.+) please"));
     var line, what;
     if (checkIfCreatingLine) {
         line = checkIfCreatingLine[8];
@@ -68,7 +68,7 @@ function identifyCommand(command) {
         return [command, name];
     } else {
         // check if creating something at a specified line (alternate phrasing):
-        var checkIfCreatingLine_ALT = command.match(new RegExp(".+ (at |in )(line |row )(number )?(.+) (create |add |insert )(a(n)? )?(.+) please"));
+        var checkIfCreatingLine_ALT = command.match(new RegExp(".+ (at |in )(line |row )(number )?(.+) (create |add |insert |make )(a(n)? )?(.+) please"));
         if (checkIfCreatingLine_ALT) {
             line = checkIfCreatingLine_ALT[4];
             what = checkIfCreatingLine_ALT[8];
@@ -81,7 +81,7 @@ function identifyCommand(command) {
             var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file"];
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
-                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert )(just )?(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
+                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
                 if (checkIfCreatingSomething) {
                     command = commandWord;
                     name = camelCase(checkIfCreatingSomething[6]);
@@ -91,7 +91,7 @@ function identifyCommand(command) {
             }
             
             // check if adding a line at the bottom of the file:
-            var checkIfAddingLastLine = command.match(new RegExp(".+ (create |add )(line |row )please"));
+            var checkIfAddingLastLine = command.match(new RegExp(".+ (create |add |make )(line |row )please"));
             if (checkIfAddingLastLine) {
                 command = "ADD LAST LINE";
                 name = "";
@@ -135,7 +135,7 @@ function identifyCommand(command) {
             }
             
             // check for hide/show commands:
-            var checkForShowHideCmds = command.match(new RegExp(".+ (hide|show) (the|all )?commands (list )?please"));
+            var checkForShowHideCmds = command.match(new RegExp(".+ (hide |show )(the|all )?commands (list )?please"));
             if (checkForShowHideCmds) {
                 command = checkForShowHideCmds[1];
                 name = "";

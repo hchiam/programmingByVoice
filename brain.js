@@ -91,7 +91,7 @@ function identifyCommand(command) {
             }
             
             // check if adding a line at the bottom of the file:
-            var checkIfAddingLastLine = command.match(new RegExp(".+ (create |add |make )(line |row )please"));
+            var checkIfAddingLastLine = command.match(new RegExp(".+ (create |add |make )(a )?(line |row )please"));
             if (checkIfAddingLastLine) {
                 command = "ADD LAST LINE";
                 name = "";

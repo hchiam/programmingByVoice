@@ -345,7 +345,14 @@ function deleteLineNumber(name, labelOutput) {
     // now use that number as the line to delete from labelOutput
     var indexStart = getIndexOfNthSubstring(labelOutput,"\n", lineToDelete - 1);
     var indexStop = getIndexOfNthSubstring(labelOutput,"\n", lineToDelete);
-    var splicedOutput = labelOutput.slice(0,indexStart) + labelOutput.slice(indexStop);
+    // get the part before and after
+    var partBefore = labelOutput.slice(0,indexStart);
+    var partAfter = labelOutput.slice(indexStop);
+    // account for anomaly if lineToDelete === 1;
+    if (lineToDelete === 1) {
+        partAfter = partAfter.slice(1, -1);
+    }
+    var splicedOutput = partBefore + partAfter;
     return splicedOutput;
 }
 

@@ -1,4 +1,4 @@
 $.getScript("treeNodeClass.js", function(){
-   test();
-   run();
+   var tree = new node(1);
+   alert(tree.getPrintOut());
 });

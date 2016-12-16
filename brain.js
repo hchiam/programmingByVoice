@@ -78,7 +78,7 @@ function identifyCommand(command) {
         } else {
             
             // check if creating something basic:
-            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file"];
+            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file", "tree"];
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
                 var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
@@ -187,6 +187,8 @@ function runCommand([command, name, justThisElement]) {
         output = removeTab(fullOutputString);
     } else if (command === "loop" || command === "for loop") {
         output = createLoop(name, fullOutputString, justThisElement);
+    } else if (command === "tree") {
+        output = createTree(name, fullOutputString, justThisElement);
     } else if (command === "literallyType") {
         output = literallyType(name, fullOutputString);
     } else if (command === "delete LAST CHAR") {
@@ -293,10 +295,8 @@ function createFile() {
 //    alert("got here");
 //};
 
-function createImport(name, justThisElement) {
-    var labelOutput = fullOutputString;
+function createImport(name, labelOutput, justThisElement) {
     var precedingComment = "// Remember to include jQuery in HTML file : <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>\n";
-    // return "import " + name + ";\n" + labelOutput;
     if (justThisElement) {
         return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
     } else {
@@ -310,6 +310,19 @@ function createLoop(name, labelOutput, justThisElement) {
         return tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
     } else {
         return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+    }
+}
+
+function createTree(name, labelOutput, justThisElement) {
+    var treeJS_directoryAndName = "js_import/treeNodeClass";
+    var precedingComment = "// Remember to include jQuery in HTML file : <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>\n";
+    var testInitializedTree = "var " + name + " = new node(1);\n";
+    var testUse = name + ".branch(2);\nalert(" + name + ".getPrintOut()); // test output (should pop-up \"1\\n\\t\\t2\")\n";
+    // return "import " + name + ";\n" + labelOutput;
+    if (justThisElement) {
+        return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n";
+    } else {
+        return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n" + labelOutput;
     }
 }
 

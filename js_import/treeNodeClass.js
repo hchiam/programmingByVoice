@@ -41,17 +41,17 @@ function node(val) {
     };
 }
 
-function test() {
-    alert('START TREE TEST');
-    var tree = new node(1);
-    alert(tree.getPrintOut(tree));
-    tree.branch(2);
-    alert(tree.getPrintOut(tree));
-    nodesToAdd = [5,3,7,2,4,6,0,9,8,3,1,4,1,5,9,2,6,5,3,5,8,9,7,9,3,2,3,8,4,6];
-    alert(nodesToAdd.length);
-    for (i=0; i<nodesToAdd.length; i++) {
-        tree.branch(nodesToAdd[i]);
-        alert(tree.getPrintOut(tree));
-    }
-    alert('DONE TREE TEST');
-}
+//function test() {
+//    alert('START TREE TEST');
+//    var tree = new node(1);
+//    alert(tree.getPrintOut(tree));
+//    tree.branch(2);
+//    alert(tree.getPrintOut(tree));
+//    nodesToAdd = [5,3,7,2,4,6,0,9,8,3,1,4,1,5,9,2,6,5,3,5,8,9,7,9,3,2,3,8,4,6];
+//    alert(nodesToAdd.length);
+//    for (i=0; i<nodesToAdd.length; i++) {
+//        tree.branch(nodesToAdd[i]);
+//        alert(tree.getPrintOut(tree));
+//    }
+//    alert('DONE TREE TEST');
+//}

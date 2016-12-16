@@ -295,11 +295,12 @@ function createFile() {
 
 function createImport(name, justThisElement) {
     var labelOutput = fullOutputString;
+    var precedingComment = "// Remember to include jQuery in HTML file : \<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>\n";
     // return "import " + name + ";\n" + labelOutput;
     if (justThisElement) {
-        return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n";
+        return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
     } else {
-        return "$.getScript(\"" + name + ".js\", function() {\n\t//Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
+        return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
     }
 }
 

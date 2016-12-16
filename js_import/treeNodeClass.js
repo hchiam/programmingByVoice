@@ -35,7 +35,7 @@ function node(val) {
         }
         // get right node or its branches
         if (currNode.refR !== null) {
-            output += "\n" + Array(level).join("\t") + currNode.refR.getPrintOut(currNode.refR, level+1);
+            output += "\n\t" + Array(level).join("\t") + currNode.refR.getPrintOut(currNode.refR, level+1);
         }
         return output;
     };

@@ -18,6 +18,11 @@ function node(val) {
         }
     };
     this.getPrintOut = function(currNode, level) {
+        // set default if not specified
+        if (currNode === undefined) {
+            currNode = this;
+        }
+        // set default if not specified
         if (level === undefined) {
             level = 1;
         }

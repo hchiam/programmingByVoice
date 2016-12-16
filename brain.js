@@ -296,7 +296,7 @@ function createFile() {
 //};
 
 function createImport(name, labelOutput, justThisElement) {
-    var precedingComment = "// Remember to include jQuery in HTML file : <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>\n";
+    var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
     if (justThisElement) {
         return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
     } else {
@@ -315,7 +315,7 @@ function createLoop(name, labelOutput, justThisElement) {
 
 function createTree(name, labelOutput, justThisElement) {
     var treeJS_directoryAndName = "js_import/treeNodeClass";
-    var precedingComment = "// Remember to include jQuery in HTML file : <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"></script>\n";
+    var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
     var testInitializedTree = "var " + name + " = new node(1);\n";
     var testUse = name + ".branch(2);\nalert(" + name + ".getPrintOut()); // test output (should pop-up \"1\\n\\t\\t2\")\n";
     // return "import " + name + ";\n" + labelOutput;

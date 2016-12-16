@@ -24,7 +24,7 @@ function node(val) {
         }
         // set default if not specified
         if (level === undefined) {
-            level = 1;
+            level = 0;
         }
         // get current node
         var output = currNode.val;
@@ -35,7 +35,7 @@ function node(val) {
         }
         // get right node or its branches
         if (currNode.refR !== null) {
-            output += "\n\t" + Array(level).join("\t") + currNode.refR.getPrintOut(currNode.refR, level+1);
+            output += "\n" + Array(level).join("\t") + currNode.refR.getPrintOut(currNode.refR, level+1);
         }
         return output;
     };

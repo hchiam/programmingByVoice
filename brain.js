@@ -135,7 +135,7 @@ function identifyCommand(command) {
             }
             
             // check for hide/show commands:
-            var checkForShowHideCmds = command.match(new RegExp(".+ (hide |show )(the|all )?commands (list )?please"));
+            var checkForShowHideCmds = command.match(new RegExp(".+ (hide|show) (the |all )?commands (list )?please"));
             if (checkForShowHideCmds) {
                 command = checkForShowHideCmds[1];
                 name = "";

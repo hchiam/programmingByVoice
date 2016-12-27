@@ -296,12 +296,17 @@ function createFile() {
 //};
 
 function createImport(name, labelOutput, justThisElement) {
-    var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
     if (justThisElement) {
-        return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
+        return "import * as " + name + " from '" + name + "';\n\n";
     } else {
-        return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
+        return "import * as " + name + " from '" + name + "';\n\n" + labelOutput;
     }
+    //var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
+    //if (justThisElement) {
+    //    return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
+    //} else {
+    //    return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
+    //}
 }
 
 function createLoop(name, labelOutput, justThisElement) {

@@ -227,7 +227,7 @@ function runCommand([command, name, justThisElement]) {
         showCommandsList();
         output = fullOutputString;
     } else if (command === "file") {
-        createFile();
+        createFile(name);
     } else if (command === "scroll") {
         scroll(name);
     }
@@ -281,29 +281,29 @@ function literallyType(literalText, labelOutput) {
     return labelOutput + tabs + literalText + "\n";
 }
 
-function createFile() {
-    // need to get content directly from document element because a button uses this function too
-    // (cannot include parameters in function called by event listener that was added to the button)
-    var content = fullOutputString;
-    window.open('data:text/txt;charset=utf-8,' + escape(content));
+function createFile(name) {
+    try {
+        if (name === "") {
+            name = "test";
+        }
+        var filename = name + ".js";
+        var temporaryElem = document.createElement("a");
+        temporaryElem.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(fullOutputString));
+        temporaryElem.setAttribute("download", filename);
+        if (document.createEvent) {
+            var event = document.createEvent("MouseEvents");
+            event.initEvent("click", true, true);
+            temporaryElem.dispatchEvent(event);
+        }
+        else {
+            temporaryElem.click();
+        }
+    } catch(err) {
+        // if the previous code returns an error or isn't supported, try using this instead:
+        var content = fullOutputString;
+        window.open('data:text/txt;charset=utf-8,' + escape(content), 'newdoc');
+    }
 }
-
-// some commented-out code for future reference (how do I programmatically choose file name?)
-
-//function exportToTxt() {
-//    var txt = "Col1,Col2,Col3\nval1,val2,val3";
-//    window.open('data:text/txt;charset=utf-8,' + escape(txt));
-//}
-
-//document.getElementById('createFile').onclick = function() {                
-//    var fileName = "name";
-//    var content = "labelOutput";
-//    var contentAsTxtData = "data:application/txt;charset=utf-8," + content;
-//    this.href = contentAsTxtData;
-//    this.target = "_blank"; // open in new tab or window, depending on browser
-//    this.download = fileName +".txt";
-//    alert("got here");
-//};
 
 function createImport(name, labelOutput, justThisElement) {
     try {

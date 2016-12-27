@@ -333,16 +333,25 @@ function createLoop(name, labelOutput, justThisElement) {
 }
 
 function createTree(name, labelOutput, justThisElement) {
-    var treeJS_directoryAndName = "js_import/treeNodeClass";
-    var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
+    var importTree = createImport("treeNodeClass", labelOutput, justThisElement); // to import treeNodeClass.js
     var testInitializedTree = "var " + name + " = new node(1);\n";
     var testUse = name + ".branch(2);\nalert(" + name + ".getPrintOut()); // test output (should pop-up \"1\\n\\t\\t2\")\n";
     // return "import " + name + ";\n" + labelOutput;
     if (justThisElement) {
-        return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n";
+        return importTree + testInitializedTree + testUse + "\n\n";
     } else {
-        return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n" + labelOutput;
+        return importTree + testInitializedTree + testUse + "\n\n" + labelOutput;
     }
+    //var treeJS_directoryAndName = "js_import/treeNodeClass";
+    //var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
+    //var testInitializedTree = "var " + name + " = new node(1);\n";
+    //var testUse = name + ".branch(2);\nalert(" + name + ".getPrintOut()); // test output (should pop-up \"1\\n\\t\\t2\")\n";
+    //// return "import " + name + ";\n" + labelOutput;
+    //if (justThisElement) {
+    //    return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n";
+    //} else {
+    //    return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n" + labelOutput;
+    //}
 }
 
 function deleteLastChar(labelOutput) {

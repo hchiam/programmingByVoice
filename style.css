@@ -8,6 +8,7 @@ body {
     margin-left:100px;
     color:grey;
     font-size:small;
+    position: fixed; /*make it stay with you as you scroll page*/
 }
 
 #commandListBox {
@@ -20,6 +21,7 @@ body {
     margin-left:100px;
     color:lightblue;
     font-size:x-large;
+    position: fixed; /*make it stay with you as you scroll page*/
 }
 
 #mainBox {
@@ -49,4 +51,8 @@ body {
 
 #createFile2 {
     visibility:hidden;
+}
+
+#createFile {
+    position: fixed; /*make it stay with you as you scroll page*/
 }

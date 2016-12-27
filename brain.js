@@ -166,6 +166,14 @@ function identifyCommand(command) {
                 }
             }
             
+            var checkForScrollCmds = command.match(/.* scroll (up|down).*/);
+            if (checkForScrollCmds) {
+                var scrollDirection = checkForScrollCmds[1];
+                command = "scroll";
+                name = scrollDirection;
+                return [command, name];
+            }
+            
             // return command ID and parameter "name" ("name" = paramater with meaning given by context)
             return [command, name];
             
@@ -220,6 +228,8 @@ function runCommand([command, name, justThisElement]) {
         output = fullOutputString;
     } else if (command === "file") {
         createFile();
+    } else if (command === "scroll") {
+        scroll(name);
     }
     return output;
 }
@@ -448,6 +458,15 @@ function hideCommandsList() {
 function showCommandsList() {
     document.getElementById('commandListBox').style.visibility = "visible";
     document.getElementById('commandListPrompt').style.visibility = "hidden"; // hide instruction to show commands
+}
+
+function scroll(name) {
+    var scrollDirection = name;
+    if (scrollDirection === "up") {
+        window.scrollBy(0, -500);
+    } else if (scrollDirection === "down") {
+        window.scrollBy(0, 500);
+    }
 }
 
 function camelCase(name) {

@@ -3,11 +3,23 @@ body {
 }
 
 #commandListPrompt {
-    position:absolute; margin-top:20px; margin-left:100px; color:grey; font-size:small;
+    position:absolute;
+    margin-top:20px;
+    margin-left:100px;
+    color:grey;
+    font-size:small;
 }
 
 #commandListBox {
-    visibility:hidden; z-index:2; background-color:black; opacity: 0.75; position:absolute; margin-top:20px; margin-left:100px; color:lightblue; font-size:x-large;
+    visibility:hidden;
+    z-index:2;
+    background-color:black;
+    opacity: 0.75;
+    position:absolute;
+    margin-top:20px;
+    margin-left:100px;
+    color:lightblue;
+    font-size:x-large;
 }
 
 #mainBox {
@@ -15,15 +27,20 @@ body {
 }
 
 #inputBox {
-    float:left; margin-left:100px;
+    float:left;
+    margin-left:100px;
+    position: fixed; /*make it stay with you as you scroll page*/
 }
 
 #outputBox {
-    z-index:1; position:absolute;margin-left:300px;
+    z-index:1;
+    position:absolute;
+    margin-left:300px;
 }
 
 #lineNumbers {
-    text-align:right; color:yellow;
+    text-align:right;
+    color:yellow;
 }
 
 #outputStr {

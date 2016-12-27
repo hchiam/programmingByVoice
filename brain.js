@@ -296,10 +296,24 @@ function createFile() {
 //};
 
 function createImport(name, labelOutput, justThisElement) {
-    if (justThisElement) {
-        return "import * as " + name + " from '" + name + "';\n\n";
-    } else {
-        return "import * as " + name + " from '" + name + "';\n\n" + labelOutput;
+    try {
+        var read = new XMLHttpRequest();
+        read.open("GET", "js_import/" + name + ".js", false);
+        read.send();
+        var fileText = read.responseText;
+        if (justThisElement) {
+            return fileText + "\n\n";
+        } else {
+            return fileText + "\n\n" + labelOutput;
+        }
+    } catch(err) {
+        //alert(err.message);
+        //alert("Import file not found. Check local directory.");
+        if (justThisElement) {
+            return "";
+        } else {
+            return labelOutput;
+        } 
     }
     //var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
     //if (justThisElement) {

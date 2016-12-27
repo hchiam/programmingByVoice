@@ -43,14 +43,14 @@
                 <input id="inputStr" type="text" oninput="parseCommand();" placeholder="Tap Here. Start Dictation." autofocus></input>
             </div>
             <div id="outputBox">
-                <button id='createFile' style="visibility: collapse;">Create File</button>
+                <button id='createFile' style="visibility: collapse;" onclick="createFile();">Create File</button>
                 <br>
                 <div>
                     <label id="lineNumbers"></label>
                     <label id="outputStr"></label>
                 </div>
                 <br>
-                <button id='createFile2'>Create File</button>
+                <button id='createFile2' onclick="createFile();">Create File</button>
             </div>
         </div>
         <script>

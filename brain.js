@@ -12,6 +12,17 @@ function parseCommand() {
     // initialize variables
     var command = document.getElementById("inputStr").value;
     var checkValid = checkValidCommand(command);
+    
+    
+    /*ASIDE: TRY TO ADD SPACE TO END OF TEXT IF PAUSED (TO AID WHEN VOICE COMMAND PAUSES MID-SENTENCE AND DOESN'T ADD A SPACE FOR THE NEXT WORD.)
+     */
+    if (command.length > 1 && command.substring(command.length-1) !== " ") {
+        //document.getElementById("inputStr").value = command + " ";
+        // the above line doesn't seem to work
+        // may need a timer
+    }
+    
+    
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, and update output text:
@@ -81,7 +92,7 @@ function identifyCommand(command) {
             var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file", "tree"];
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
-                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named )?(.+) please"));
+                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named |called |with name )?(.+) please"));
                 if (checkIfCreatingSomething) {
                     command = commandWord;
                     name = camelCase(checkIfCreatingSomething[6]);

@@ -4,6 +4,9 @@ var editedInputAlready = false;
 var fullOutputString = ""; // to properly retain tabs and newline characters (track this var and update label text to match this var)
 var historyStack = []; // to be able to "undo"
 var searchWord = ""; // to be able to edit inside functions, etc.
+var delayTimeMin = 2000;
+var timeCurr, timePrev;
+var timePrev = new Date().getTime();
 
 /*---------------------------------------------------------------------------*/
 
@@ -13,15 +16,7 @@ function parseCommand() {
     var command = document.getElementById("inputStr").value;
     var checkValid = checkValidCommand(command);
     
-    
-    /*ASIDE: TRY TO ADD SPACE TO END OF TEXT IF PAUSED (TO AID WHEN VOICE COMMAND PAUSES MID-SENTENCE AND DOESN'T ADD A SPACE FOR THE NEXT WORD.)
-     */
-    if (command.length > 1 && command.substring(command.length-1) !== " ") {
-        //document.getElementById("inputStr").value = command + " ";
-        // the above line doesn't seem to work
-        // may need a timer
-    }
-    
+    command = addSpaceIfDelay(command);
     
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
@@ -61,6 +56,23 @@ function checkValidCommand(command) {
     } else {
         return false;
     }
+}
+
+function addSpaceIfDelay(command) {
+    /* TRY TO ADD SPACE TO END OF TEXT IF PAUSED (TO AID WHEN VOICE COMMAND PAUSES MID-SENTENCE AND DOESN'T ADD A SPACE FOR THE NEXT WORD.)
+     * (Because pauses usually happen between words, add a space when there's a pause. Mac Dictation doesn't add a space.)
+     */
+    if (command.length > 1 && command.substring(command.length-1) !== " ") {
+        timeCurr = new Date().getTime();
+        if (timeCurr - timePrev > delayTimeMin) {
+            // add space before next word
+            document.getElementById("inputStr").value = command.substring(0,command.length-1) + " " + command.substring(command.length-1);
+        }
+        timePrev = new Date().getTime(); // reset previous value at every keystroke
+    }
+    /* TODO: may need to use threads. this doesn't seem to work with dictation yet.
+     */
+    return command;
 }
 
 function identifyCommand(command) {

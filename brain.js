@@ -16,7 +16,7 @@ function parseCommand() {
     var command = document.getElementById("inputStr").value;
     var checkValid = checkValidCommand(command);
     
-    command = addSpaceIfDelay(command);
+    //command = addSpaceIfDelay(command);
     
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {

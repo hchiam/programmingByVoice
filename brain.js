@@ -7,6 +7,7 @@ var searchWord = ""; // to be able to edit inside functions, etc.
 var delayTimeMin = 2000;
 var timeCurr, timePrev;
 var timePrev = new Date().getTime();
+var numLines = 0;
 
 /*---------------------------------------------------------------------------*/
 
@@ -23,11 +24,12 @@ function parseCommand() {
         // identify command, run command, and update output text:
         historyStack.push(fullOutputString); // to be able to "undo"
         fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
-        document.getElementById("outputStr").innerText = fullOutputString + "\r";
+        document.getElementById("outputStr").innerText = fullOutputString + "\u2063";
+            // "\u2063" = invisible separator (needed for one character at end of last line)
         // clear the sentence that was entered
         document.getElementById("inputStr").value = "";
         // update line numbers:
-        var numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
+        numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
         document.getElementById("lineNumbers").innerText = "";
         var divider = " |";
         for (i=1; i<numLines; i++) {
@@ -230,10 +232,6 @@ function runCommand([command, name, justThisElement]) {
         output = deleteLineNumber(name, fullOutputString);
     } else if (command === "edit FUNCTION") {
         output = editFunction(name, fullOutputString);
-    } else if (command.substring(0,5) === "line ") {
-        var line = name;
-        var what = command.substring(5);
-        output = createLine(line, what, fullOutputString);
     } else if (command === "ADD LAST LINE") {
         output = createLastLine(fullOutputString);
     } else if (command === "undo") {
@@ -254,6 +252,17 @@ function runCommand([command, name, justThisElement]) {
     } else if (command === "scroll") {
         scroll(name);
     }
+    
+    // set cursor position to default at bottom:
+    indexOfCursor = output.length-1;
+    
+    // create at line number and set cursor there too
+    if (command.substring(0,5) === "line ") {
+        var line = name;
+        var what = command.substring(5);
+        output = createLine(line, what, fullOutputString);
+    }
+    
     return output;
 }
 
@@ -464,6 +473,8 @@ function createLine(line, what, labelOutput) {
         // get new labelOutput:
         var tabs = "\t".repeat(currentTabs);
         newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);
+        // update cursor position
+        indexOfCursor = indexStart;
     }
     return newLabelOutput;
 }

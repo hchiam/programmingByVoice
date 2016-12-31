@@ -254,7 +254,7 @@ function runCommand([command, name, justThisElement]) {
     }
     
     // set cursor position to default at bottom:
-    indexOfCursor = output.length-1;
+    cursorLineNum = numLines;
     
     // create at line number and set cursor there too
     if (command.substring(0,5) === "line ") {
@@ -474,7 +474,7 @@ function createLine(line, what, labelOutput) {
         var tabs = "\t".repeat(currentTabs);
         newLabelOutput = labelOutput.substring(0,indexStart) + "\n" + tabs + subCmd + labelOutput.substring(indexStop);
         // update cursor position
-        indexOfCursor = indexStart;
+        cursorLineNum = line;
     }
     return newLabelOutput;
 }

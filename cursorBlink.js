@@ -1,7 +1,7 @@
 var timer = setInterval(timerAction, 500);
 
 var cursorVisible = true;
-var indexOfCursor = 0; // initialize to avoid errors
+var cursorLineNum = 1;
 
 function timerAction() {
     var outputStr = document.getElementById("outputStr");
@@ -10,8 +10,8 @@ function timerAction() {
             outputStr.innerText = outputStr.innerText.replace(/▂/g,""); // remove all instances of "▂"
             cursorVisible = false;
         } else {
-            // TODO: the following line is causing problems with spacing of lines:
-            outputStr.innerText = outputStr.innerText.substring(0,indexOfCursor) + "▂" + outputStr.innerText.substring(indexOfCursor);
+            var indexSplice = getIndexOfNthSubstring(outputStr.innerText, "\n", cursorLineNum-1);
+            outputStr.innerText = outputStr.innerText.substring(0,indexSplice) + "▂" + outputStr.innerText.substring(indexSplice);
             cursorVisible = true;
         }
     }

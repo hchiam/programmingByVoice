@@ -191,11 +191,19 @@ function identifyCommand(command) {
                 }
             }
             
-            var checkForScrollCmds = command.match(/.* scroll (up|down).*/);
+            var checkForScrollCmds = command.match(/.* scroll (up|down) .*/);
             if (checkForScrollCmds) {
                 var scrollDirection = checkForScrollCmds[1];
                 command = "scroll";
                 name = scrollDirection;
+                return [command, name];
+            }
+            
+            var checkForMovingCursor = command.match(/.* (move )?cursor to line (number )?(.+) .*/);
+            if (checkForMovingCursor) {
+                var moveCursorToLineNum = checkForMovingCursor[3];
+                command = "move cursor";
+                name = moveCursorToLineNum;
                 return [command, name];
             }
             
@@ -253,14 +261,19 @@ function runCommand([command, name, justThisElement]) {
         scroll(name);
     }
     
-    // set cursor position to default at bottom:
+    // set DEFAULT cursor position at bottom:
     cursorLineNum = numLines;
     
-    // create at line number and set cursor there too
+    // create at line number and set cursor there too:
     if (command.substring(0,5) === "line ") {
         var line = name;
         var what = command.substring(5);
         output = createLine(line, what, fullOutputString);
+    }
+    
+    // set cursor position:
+    if (command === "move cursor") {
+        moveCursor(name);
     }
     
     return output;
@@ -500,6 +513,14 @@ function scroll(name) {
         window.scrollBy(0, -500);
     } else if (scrollDirection === "down") {
         window.scrollBy(0, 500);
+    }
+}
+
+function moveCursor(lineNum) {
+    // move cursor to line number
+    cursorLineNum = parseInt(lineNum) + 1; // cursorBlink.js will take care of the insertion of the cursor character
+    if (cursorLineNum >= numLines) {
+        cursorLineNum = numLines-1;
     }
 }
 

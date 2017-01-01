@@ -517,6 +517,8 @@ function scroll(name) {
 }
 
 function moveCursor(lineNum) {
+    // convert lineNum to int
+    linNum = numberNameToInt(linNum);
     // move cursor to line number
     cursorLineNum = parseInt(lineNum) + 1; // cursorBlink.js will take care of the insertion of the cursor character
     if (cursorLineNum >= numLines) {

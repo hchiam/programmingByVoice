@@ -150,13 +150,16 @@ function identifyCommand(command) {
         } else {
             
             // check if creating something basic:
-            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file", "tree"];
+            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file", "tree", "comment"];
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
                 var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named |called |with name )?(.+) please"));
                 if (checkIfCreatingSomething) {
                     command = commandWord;
-                    name = camelCase(checkIfCreatingSomething[6]);
+                    name = checkIfCreatingSomething[6];
+                    if (command !== "comment") {
+                        name = camelCase(name);
+                    }
                     var justThisElement = (checkIfCreatingSomething[2]==="just ");
                     return [command, name, justThisElement];
                 }
@@ -277,6 +280,8 @@ function runCommand([command, name, justThisElement]) {
         output = createLoop(name, fullOutputString, justThisElement);
     } else if (command === "tree") {
         output = createTree(name, fullOutputString, justThisElement);
+    } else if (command === "comment") {
+        output = createComment(name, fullOutputString, justThisElement);
     } else if (command === "literallyType") {
         output = literallyType(name, fullOutputString);
     } else if (command === "delete LAST CHAR") {
@@ -454,6 +459,16 @@ function createTree(name, labelOutput, justThisElement) {
     //} else {
     //    return precedingComment + "$.getScript(\"" + treeJS_directoryAndName + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n" + testInitializedTree + testUse + "});\n\n" + labelOutput;
     //}
+}
+
+function createComment(name, labelOutput, justThisElement) {
+    var comment = name;
+    var tabs = "\t".repeat(currentTabs);
+    if (justThisElement) {
+        return tabs + "// " + comment + "\n";
+    } else {
+        return labelOutput + tabs + "// " + comment + "\n";
+    }
 }
 
 function deleteLastChar(labelOutput) {

@@ -15,40 +15,66 @@ var numLines = 0;
 function parseCommand() {
     // initialize variables
     var command = document.getElementById("inputStr").value;
-    var checkValid = checkValidCommand(command);
     
-    //command = addSpaceIfDelay(command);
+    var deleteInput = deleteImproperlyStartedCommand(command);
     
-    command = replaceSpecialSymbols(command);
-    
-    // check if command is in valid form (in case of noise or incorrect entry)
-    if (checkValid) {
-        // identify command, run command, and update output text:
-        historyStack.push(fullOutputString); // to be able to "undo"
-        fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
-        document.getElementById("outputStr").innerText = fullOutputString + "\u2063";
-            // "\u2063" = invisible separator (needed for one character at end of last line)
-        // clear the sentence that was entered
-        document.getElementById("inputStr").value = "";
-        // update line numbers:
-        numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
-        document.getElementById("lineNumbers").innerText = "";
-        var divider = " |";
-        for (i=1; i<numLines; i++) {
-            document.getElementById("lineNumbers").innerText += i.toString() + divider + "\n";
+    if (deleteInput) {
+        
+        document.getElementById("inputStr").value = ""; // delete input
+        command = ""; // prevent parsing, just in case
+        
+    } else {
+        
+        //command = addSpaceIfDelay(command); // TODO
+        
+        var checkValid = checkValidCommand(command);
+        
+        command = replaceSpecialSymbols(command);
+        
+        // check if command is in valid form (in case of noise or incorrect entry)
+        if (checkValid) {
+            // identify command, run command, and update output text:
+            historyStack.push(fullOutputString); // to be able to "undo"
+            fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
+            document.getElementById("outputStr").innerText = fullOutputString + "\u2063";
+                // "\u2063" = invisible separator (needed for one character at end of last line)
+            // clear the sentence that was entered
+            document.getElementById("inputStr").value = "";
+            // update line numbers:
+            numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
+            document.getElementById("lineNumbers").innerText = "";
+            var divider = " |";
+            for (i=1; i<numLines; i++) {
+                document.getElementById("lineNumbers").innerText += i.toString() + divider + "\n";
+            }
+            // make 2nd button visible if displayed text is getting long
+            if (numLines>10) {
+                document.getElementById("createFile2").style.visibility = "visible";
+            }
         }
-        // make 2nd button visible if displayed text is getting long
-        if (numLines>10) {
-            document.getElementById("createFile2").style.visibility = "visible";
+        // once user starts entering text, remove placeholder text and show some collapsed GUI elements
+        if (editedInputAlready === false) {
+            editedInputAlready = true;
+            document.getElementById("inputStr").placeholder = "";
+            document.getElementById("commandListPrompt").style.visibility = "visible";
+            document.getElementById("createFile").style.visibility = "visible";
+        }
+        
+    }
+}
+
+function deleteImproperlyStartedCommand(command) {
+    var deleteIt = false;
+    if (command.includes(" ")) {
+        if (command.substr(0,8) === "computer") {
+            //alert('Command started with proper keyword.');
+            deleteIt = false;
+        } else {
+            //alert('Command not started properly (missing keyword or misheard).');
+            deleteIt = true;
         }
     }
-    // once user starts entering text, remove placeholder text and show some collapsed GUI elements
-    if (editedInputAlready === false) {
-        editedInputAlready = true;
-        document.getElementById("inputStr").placeholder = "";
-        document.getElementById("commandListPrompt").style.visibility = "visible";
-        document.getElementById("createFile").style.visibility = "visible";
-    }
+    return deleteIt;
 }
 
 function addSpaceIfDelay(command) {

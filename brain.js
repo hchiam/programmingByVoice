@@ -394,10 +394,11 @@ function createVariable(name, labelOutput, justThisElement) {
 
 function createFunction(name, labelOutput, justThisElement) {
     var tabs = "\t".repeat(currentTabs);
+    var functionCode = tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n" + tabs + "}\n\n";
     if (justThisElement) {
-        return tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
+        return functionCode;
     } else {
-        return labelOutput + tabs + "function " + name + "(" + ") {\n" + tabs + "\t\n}\n\n";
+        return labelOutput + functionCode;
     }
 }
 

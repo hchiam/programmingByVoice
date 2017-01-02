@@ -150,7 +150,7 @@ function identifyCommand(command) {
         } else {
             
             // check if creating something basic:
-            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "file", "tree", "comment"];
+            var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "tree", "comment", "file"]; // make "file" at end so it gets superseded
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
                 var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named |called |with name )?(.+) please"));

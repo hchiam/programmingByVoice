@@ -49,17 +49,6 @@ function parseCommand() {
     }
 }
 
-function checkValidCommand(command) {
-    var words = command.split(" ");
-    var firstWord = words[0].toLowerCase();
-    var lastWord = words[words.length-1].toLowerCase();
-    if (firstWord === "computer" && lastWord === "please" && words.length > 2) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function addSpaceIfDelay(command) {
     /* TRY TO ADD SPACE TO END OF TEXT IF PAUSED (TO AID WHEN VOICE COMMAND PAUSES MID-SENTENCE AND DOESN'T ADD A SPACE FOR THE NEXT WORD.)
      * (Because pauses usually happen between words, add a space when there's a pause. Mac Dictation doesn't add a space.)
@@ -75,6 +64,17 @@ function addSpaceIfDelay(command) {
     /* TODO: may need to use threads. this doesn't seem to work with dictation yet.
      */
     return command;
+}
+
+function checkValidCommand(command) {
+    var words = command.split(" ");
+    var firstWord = words[0].toLowerCase();
+    var lastWord = words[words.length-1].toLowerCase();
+    if (firstWord === "computer" && lastWord === "please" && words.length > 2) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function identifyCommand(command) {

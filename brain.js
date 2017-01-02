@@ -19,6 +19,8 @@ function parseCommand() {
     
     //command = addSpaceIfDelay(command);
     
+    command = replaceSpecialSymbols(command);
+    
     // check if command is in valid form (in case of noise or incorrect entry)
     if (checkValid) {
         // identify command, run command, and update output text:
@@ -75,6 +77,51 @@ function checkValidCommand(command) {
     } else {
         return false;
     }
+}
+
+function replaceSpecialSymbols(command) {
+    var replacements = {
+        "open curly (bracket|brace)": "{",
+        "close curly (bracket|brace)": "}",
+            // which supersede
+            "curly (brackets|braces)": "{}",
+            "curly (bracket|brace)": "{",
+        "open square (bracket|brace)": "[",
+        "close square (bracket|brace)": "]",
+            // which supersede
+            "square (brackets|braces)": "[]",
+            "square (bracket|brace)": "[",
+        "open (bracket|brace)": "(",
+        "close (bracket|brace)": ")",
+            // which supersede
+            "brackets": "()",
+            "(bracket|brace)": "(",
+        "equal(s)?": "=",
+        "dot": ".",
+        "comma": ",",
+        "semicolon": ";",
+            // which supersedes
+            "colon": ":",
+        "quotation mark(s)?": "\"\"",
+        "exclamation mark": "!",
+        "question mark": "?",
+        "dollar (sign|symbol)": "$",
+        "percent (sign|symbol)": "%",
+        "ampersand( sign| symbol)?": "&",
+        "double ampersand( sign| symbol)?": "&&",
+        "logical and": "&&",
+        "(logical )?and( sign| symbol)": "&&",
+        "logical or": "||",
+        "(logical )?or( sign| symbol)": "||",
+        "double bar(s)?": "||"
+    };
+    for (var key in replacements) {
+        if (replacements.hasOwnProperty(key)) {
+            var re = new RegExp(key, "g");
+            command = command.replace(re, replacements[key]);   
+        }
+    }
+    return command;
 }
 
 function identifyCommand(command) {

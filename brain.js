@@ -484,7 +484,7 @@ function createImport(name, labelOutput, justThisElement) {
 
 function createLoop(name, labelOutput, justThisElement) {
     var tabs = "\t".repeat(currentTabs);
-    var forLoopCode = "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n" + tabs + "}\n";
+    var forLoopCode = tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n" + tabs + "}\n";
     if (justThisElement) {
         return forLoopCode;
     } else {

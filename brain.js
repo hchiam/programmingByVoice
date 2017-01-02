@@ -257,6 +257,13 @@ function identifyCommand(command) {
                 return [command, name];
             }
             
+            var checkClearAll = command.match(/computer clear (all |everything )please/);
+            if (checkClearAll) {
+                command = "clear all";
+                name = "";
+                return [command, name];
+            }
+            
             // return command ID and parameter "name" ("name" = paramater with meaning given by context)
             return [command, name];
             
@@ -311,6 +318,8 @@ function runCommand([command, name, justThisElement]) {
         createFile(name);
     } else if (command === "scroll") {
         scroll(name);
+    } else if (command === "clear all") {
+        output = clearAll();
     }
     
     // set DEFAULT cursor position at bottom:
@@ -586,6 +595,10 @@ function moveCursor(lineNum) {
     if (cursorLineNum >= numLines) {
         cursorLineNum = numLines - 1;
     }
+}
+
+function clearAll() {
+    return "";
 }
 
 function camelCase(name) {

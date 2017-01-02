@@ -249,7 +249,7 @@ function identifyCommand(command) {
                 return [command, name];
             }
             
-            var checkForMovingCursor = command.match(/.* (move )?cursor to line (number )?(.+) .*/);
+            var checkForMovingCursor = command.match(/.* (move )?cursor to line (number )?(.+) please/);
             if (checkForMovingCursor) {
                 var moveCursorToLineNum = checkForMovingCursor[3];
                 command = "move cursor";
@@ -580,11 +580,11 @@ function scroll(name) {
 
 function moveCursor(lineNum) {
     // convert lineNum to int
-    linNum = numberNameToInt(linNum);
+    lineNum = numberNameToInt(lineNum);
     // move cursor to line number
     cursorLineNum = parseInt(lineNum) + 1; // cursorBlink.js will take care of the insertion of the cursor character
     if (cursorLineNum >= numLines) {
-        cursorLineNum = numLines-1;
+        cursorLineNum = numLines - 1;
     }
 }
 

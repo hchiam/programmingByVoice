@@ -47,6 +47,8 @@ function parseCommand() {
             for (i=1; i<numLines; i++) {
                 document.getElementById("lineNumbers").innerText += i.toString() + divider + "\n";
             }
+            //update cursor position:
+            
             // make 2nd button visible if displayed text is getting long
             if (numLines>10) {
                 document.getElementById("createFile2").style.visibility = "visible";
@@ -299,24 +301,39 @@ function identifyCommand(command) {
 
 function runCommand([command, name, justThisElement]) {
     var output = fullOutputString; // fail-safe to not changing label output in case command run fails
+    var numLines_BEFORE = output.split("\n").length; // get number of lines BEFORE running command
     if (command === "variable") {
         output = createVariable(name, fullOutputString, justThisElement);
+        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+        cursorLineNum = numLines_BEFORE;
     } else if (command === "function") {
         output = createFunction(name, fullOutputString, justThisElement);
+        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+        cursorLineNum = numLines_BEFORE;
     } else if (command === "tab") {
         output = addTab(fullOutputString, justThisElement);
     } else if (command === "import") {
         output = createImport(name, fullOutputString, justThisElement);
+        // set cursor position at TOP:
+        cursorLineNum = 1;
     } else if (command === "removeTab") {
         output = removeTab(fullOutputString);
     } else if (command === "loop" || command === "for loop") {
         output = createLoop(name, fullOutputString, justThisElement);
+        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+        cursorLineNum = numLines_BEFORE;
     } else if (command === "tree") {
         output = createTree(name, fullOutputString, justThisElement);
+        // set cursor position at TOP:
+        cursorLineNum = 1;
     } else if (command === "comment") {
         output = createComment(name, fullOutputString, justThisElement);
+        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+        cursorLineNum = numLines_BEFORE;
     } else if (command === "literallyType") {
         output = literallyType(name, fullOutputString);
+        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+        cursorLineNum = numLines_BEFORE;
     } else if (command === "delete LAST CHAR") {
         output = deleteLastChar(fullOutputString);
     } else if (command === "delete LAST LINE") {
@@ -327,6 +344,8 @@ function runCommand([command, name, justThisElement]) {
         output = editFunction(name, fullOutputString);
     } else if (command === "ADD LAST LINE") {
         output = createLastLine(fullOutputString);
+        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+        cursorLineNum = numLines_BEFORE;
     } else if (command === "undo") {
         if (historyStack.length >= 2) {
             historyStack.pop();
@@ -344,23 +363,17 @@ function runCommand([command, name, justThisElement]) {
         createFile(name);
     } else if (command === "scroll") {
         scroll(name);
+    } else if (command === "move cursor") {
+        moveCursor(name);
     } else if (command === "clear all") {
         output = clearAll();
     }
     
-    // set DEFAULT cursor position at bottom:
-    cursorLineNum = numLines;
-    
-    // create at line number and set cursor there too:
+    // create at line number and set cursor there too (because default is last line):
     if (command.substring(0,5) === "line ") {
         var line = name;
         var what = command.substring(5);
         output = createLine(line, what, fullOutputString);
-    }
-    
-    // set cursor position:
-    if (command === "move cursor") {
-        moveCursor(name);
     }
     
     return output;
@@ -449,28 +462,32 @@ function createImport(name, labelOutput, justThisElement) {
             return fileText + "\n\n" + labelOutput;
         }
     } catch(err) {
+        
+        //TODO: does not get here
+        
         //alert(err.message);
         //alert("Import file not found. Check local directory.");
         if (justThisElement) {
-            return "";
+            //return "";
+            var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
+            if (justThisElement) {
+                return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
+            } else {
+                return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
+            }
         } else {
             return labelOutput;
         } 
     }
-    //var precedingComment = "// include jQuery in HTML: <script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js\"/>\n";
-    //if (justThisElement) {
-    //    return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n";
-    //} else {
-    //    return precedingComment + "$.getScript(\"" + name + ".js\", function() {\n\t// Script loaded but not necessarily executed.\n});\n\n" + labelOutput;
-    //}
 }
 
 function createLoop(name, labelOutput, justThisElement) {
     var tabs = "\t".repeat(currentTabs);
+    var forLoopCode = "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n" + tabs + "}\n";
     if (justThisElement) {
-        return tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+        return forLoopCode;
     } else {
-        return labelOutput + tabs + "for (" + name + " = 0; " + name + " < " + name + ".length; " + name + "++) {\n" + tabs + "\t\n}\n";
+        return labelOutput + forLoopCode;
     }
 }
 

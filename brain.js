@@ -8,6 +8,7 @@ var delayTimeMin = 2000;
 var timeCurr, timePrev;
 var timePrev = new Date().getTime();
 var numLines = 0;
+var ignoreEditCommands = false;
 
 /*---------------------------------------------------------------------------*/
 
@@ -35,25 +36,40 @@ function parseCommand() {
         if (checkValid) {
             // identify command, run command, and update output text:
             historyStack.push(fullOutputString); // to be able to "undo"
-            fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
-            document.getElementById("outputStr").innerText = fullOutputString + "\u2063";
-                // "\u2063" = invisible separator (needed for one character at end of last line)
-            // clear the sentence that was entered
-            document.getElementById("inputStr").value = "";
-            // update line numbers:
-            numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
-            document.getElementById("lineNumbers").innerText = "";
-            var divider = " |";
-            for (i=1; i<numLines; i++) {
-                document.getElementById("lineNumbers").innerText += i.toString() + divider + "\n";
-            }
-            //update cursor position:
             
-            // make 2nd button visible if displayed text is getting long
-            if (numLines>10) {
-                document.getElementById("createFile2").style.visibility = "visible";
+            if (ignoreEditCommands === false) {
+                fullOutputString = runCommand(identifyCommand(command)); /* <- THIS IS THE KEY LINE IN THIS FUNCTION */
+                
+                document.getElementById("outputStr").innerText = fullOutputString + "\u2063";
+                    // "\u2063" = invisible separator (needed for one character at end of last line)
+                
+                // clear the sentence that was entered
+                document.getElementById("inputStr").value = "";
+                
+                // update line numbers:
+                numLines = fullOutputString.split("\n").length + 1; // labelOutput.split("\n").length + 1;
+                document.getElementById("lineNumbers").innerText = "";
+                var divider = " |";
+                for (i=1; i<numLines; i++) {
+                    document.getElementById("lineNumbers").innerText += i.toString() + divider + "\n";
+                }
+                
+                // make 2nd button visible if displayed text is getting long
+                if (numLines>10) {
+                    document.getElementById("createFile2").style.visibility = "visible";
+                }
+            } else if (ignoreEditCommands === true) {
+                var commandTest, nameTest;
+                [commandTest, nameTest] = identifyCommand(command);
+                if (commandTest === "listen") {
+                    runCommand([commandTest, nameTest]); // listen();
+                }
+                // clear the sentence that was entered
+                document.getElementById("inputStr").value = "";
             }
+            
         }
+        
         // once user starts entering text, remove placeholder text and show some collapsed GUI elements
         if (editedInputAlready === false) {
             editedInputAlready = true;
@@ -292,6 +308,20 @@ function identifyCommand(command) {
                 return [command, name];
             }
             
+            var checkIgnore = command.match(/computer ((stop listen(ing)?( to me)?)|(ignore( me)?)|(take a break)) .*/);
+            if (checkIgnore) {
+                command = "ignore";
+                name = "";
+                return [command, name];
+            }
+            
+            var checkListen = command.match(/computer ((start listening)|(listen)) .*/);
+            if (checkListen) {
+                command = "listen";
+                name = "";
+                return [command, name];
+            }
+            
             // return command ID and parameter "name" ("name" = paramater with meaning given by context)
             return [command, name];
             
@@ -367,6 +397,10 @@ function runCommand([command, name, justThisElement]) {
         moveCursor(name);
     } else if (command === "clear all") {
         output = clearAll();
+    } else if (command === "ignore") {
+        ignore();
+    } else if (command === "listen") {
+        listen();
     }
     
     // create at line number and set cursor there too (because default is last line):
@@ -643,6 +677,19 @@ function moveCursor(lineNum) {
 
 function clearAll() {
     return "";
+}
+
+function listen() {
+    ignoreEditCommands = false;
+    cursorBlinkOn = true;
+    document.getElementById("outputStr").style.color = "lime";
+}
+
+function ignore() {
+    ignoreEditCommands = true;
+    cursorBlinkOn = false;
+    outputStr
+    document.getElementById("outputStr").style.color = "grey";
 }
 
 function camelCase(name) {

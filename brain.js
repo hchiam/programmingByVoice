@@ -332,75 +332,100 @@ function identifyCommand(command) {
 function runCommand([command, name, justThisElement]) {
     var output = fullOutputString; // fail-safe to not changing label output in case command run fails
     var numLines_BEFORE = output.split("\n").length; // get number of lines BEFORE running command
-    if (command === "variable") {
-        output = createVariable(name, fullOutputString, justThisElement);
-        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
-        cursorLineNum = numLines_BEFORE;
-    } else if (command === "function") {
-        output = createFunction(name, fullOutputString, justThisElement);
-        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
-        cursorLineNum = numLines_BEFORE;
-    } else if (command === "tab") {
-        output = addTab(fullOutputString, justThisElement);
-    } else if (command === "import") {
-        output = createImport(name, fullOutputString, justThisElement);
-        // set cursor position at TOP:
-        cursorLineNum = 1;
-    } else if (command === "removeTab") {
-        output = removeTab(fullOutputString);
-    } else if (command === "loop" || command === "for loop") {
-        output = createLoop(name, fullOutputString, justThisElement);
-        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
-        cursorLineNum = numLines_BEFORE;
-    } else if (command === "tree") {
-        output = createTree(name, fullOutputString, justThisElement);
-        // set cursor position at TOP:
-        cursorLineNum = 1;
-    } else if (command === "comment") {
-        output = createComment(name, fullOutputString, justThisElement);
-        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
-        cursorLineNum = numLines_BEFORE;
-    } else if (command === "literallyType") {
-        output = literallyType(name, fullOutputString);
-        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
-        cursorLineNum = numLines_BEFORE;
-    } else if (command === "delete LAST CHAR") {
-        output = deleteLastChar(fullOutputString);
-    } else if (command === "delete LAST LINE") {
-        output = deleteLastLine(fullOutputString);
-    } else if (command === "delete LINE NUMBER") {
-        output = deleteLineNumber(name, fullOutputString);
-    } else if (command === "edit FUNCTION") {
-        output = editFunction(name, fullOutputString);
-    } else if (command === "ADD LAST LINE") {
-        output = createLastLine(fullOutputString);
-        // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
-        cursorLineNum = numLines_BEFORE;
-    } else if (command === "undo") {
-        if (historyStack.length >= 2) {
-            historyStack.pop();
-            output = historyStack.pop();
-        } else { // account for empty stack
-            output = "";
-        }
-    } else if (command === "hide") {
-        hideCommandsList();
-        output = fullOutputString;
-    } else if (command === "show") {
-        showCommandsList();
-        output = fullOutputString;
-    } else if (command === "file") {
-        createFile(name);
-    } else if (command === "scroll") {
-        scroll(name);
-    } else if (command === "move cursor") {
-        moveCursor(name);
-    } else if (command === "clear all") {
-        output = clearAll();
-    } else if (command === "ignore") {
-        ignore();
-    } else if (command === "listen") {
-        listen();
+    switch (command) {
+        case "variable":
+            output = createVariable(name, fullOutputString, justThisElement);
+            // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+            cursorLineNum = numLines_BEFORE;
+            break;
+        case "function":
+            output = createFunction(name, fullOutputString, justThisElement);
+            // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+            cursorLineNum = numLines_BEFORE;
+            break;
+        case "tab":
+            output = addTab(fullOutputString, justThisElement);
+            break;
+        case "import":
+            output = createImport(name, fullOutputString, justThisElement);
+            // set cursor position at TOP:
+            cursorLineNum = 1;
+            break;
+        case "removeTab":
+            output = removeTab(fullOutputString);
+            break;
+        case "loop":
+        case "for loop":
+            output = createLoop(name, fullOutputString, justThisElement);
+            // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+            cursorLineNum = numLines_BEFORE;
+            break;
+        case "tree":
+            output = createTree(name, fullOutputString, justThisElement);
+            // set cursor position at TOP:
+            cursorLineNum = 1;
+            break;
+        case "comment":
+            output = createComment(name, fullOutputString, justThisElement);
+            // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+            cursorLineNum = numLines_BEFORE;
+            break;
+        case "literallyType":
+            output = literallyType(name, fullOutputString);
+            // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+            cursorLineNum = numLines_BEFORE;
+            break;
+        case "delete LAST CHAR":
+            output = deleteLastChar(fullOutputString);
+            break;
+        case "delete LAST LINE":
+            output = deleteLastLine(fullOutputString);
+            break;
+        case "delete LINE NUMBER":
+            output = deleteLineNumber(name, fullOutputString);
+            break;
+        case "edit FUNCTION":
+            output = editFunction(name, fullOutputString);
+            break;
+        case "ADD LAST LINE":
+            output = createLastLine(fullOutputString);
+            // set cursor position at BOTTOM, TO THE LEFT OF NEW STUFF:
+            cursorLineNum = numLines_BEFORE;
+            break;
+        case "undo":
+            if (historyStack.length >= 2) {
+                historyStack.pop();
+                output = historyStack.pop();
+            } else { // account for empty stack
+                output = "";
+            }
+            break;
+        case "hide":
+            hideCommandsList();
+            output = fullOutputString;
+            break;
+        case "show":
+            showCommandsList();
+            output = fullOutputString;
+            break;
+        case "file":
+            createFile(name);
+            break;
+        case "scroll":
+            scroll(name);
+            break;
+        case "move cursor":
+            moveCursor(name);
+            break;
+        case "clear all":
+            output = clearAll();
+            break;
+        case "ignore":
+            ignore();
+            break;
+        case "listen":
+            listen();
+            break;
     }
     
     // create at line number and set cursor there too (because default is last line):

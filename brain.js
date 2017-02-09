@@ -141,11 +141,11 @@ function replaceSpecialSymbols(command) {
             "brackets": "()",
             "(bracket|brace)": "(",
         "equal(s)?": "=",
-        "dot": ".",
-        "comma": ",",
+        "dot ": ".",
+        "comma ": ",", // add space after "comma" to avoid replacing parts of words like "command"
         "semicolon": ";",
             // which supersedes
-            "colon": ":",
+            "colon ": ":",
         "quotation mark(s)?": "\"\"",
         "exclamation mark": "!",
         "question mark": "?",

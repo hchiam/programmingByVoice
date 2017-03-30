@@ -4,7 +4,7 @@ Combine Mac Dictation with a GUI in your browser to write code by voice command.
 
 Try it in your browser: [http://codepen.io/hchiam/full/evbOdv](http://codepen.io/hchiam/full/evbOdv)
 
-Steps to use it:
+**Steps to use it:**
 
 1) Click in the textbox.
 2) Start up Mac Dictation (default: press the Fn key twice).

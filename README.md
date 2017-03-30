@@ -2,6 +2,10 @@
 
 Combine Mac Dictation with a GUI (Graphical User Interface) to write code by voice command.
 
+1) Click in the textbox.
+2) Start up Mac Dictation (default: press the Fn key twice).
+3) Say (or type) something like "computer show commands please".
+
 Try it in your browser: [http://codepen.io/hchiam/full/evbOdv](http://codepen.io/hchiam/full/evbOdv)
 
 [![screenshot_GUI.png](https://github.com/hchiam/programmingByVoice/blob/master/screenshot_GUI.png "Combine Mac Dictation with a GUI to program code by voice command.")](http://codepen.io/hchiam/full/evbOdv)

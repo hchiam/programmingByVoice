@@ -15,7 +15,7 @@ var ignoreEditCommands = false;
 // parseCommand() is the main function here in the brain, and calls the other functions
 function parseCommand() {
     // initialize variables
-    var command = document.getElementById("inputStr").value;
+    var command = document.getElementById("inputStr").value.toLowerCase();
     
     var deleteInput = deleteImproperlyStartedCommand(command);
     

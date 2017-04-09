@@ -208,7 +208,7 @@ function identifyCommand(command) {
             var createCommandsList = ["variable", "function", "tab", "import", "loop", "for loop", "tree", "comment", "file"]; // make "file" at end so it gets superseded
             for (i=0; i<createCommandsList.length; i++) {
                 var commandWord = createCommandsList[i];
-                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (with |named |called |with name )?(.+) please"));
+                var checkIfCreatingSomething = command.match(new RegExp(".+ (create |add |insert |make )(just )?(a(n)? )?" + commandWord + " (|with variable named |with variable |with name |with |named |called )?(.+) please"));
                 if (checkIfCreatingSomething) {
                     command = commandWord;
                     name = checkIfCreatingSomething[6];

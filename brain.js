@@ -5,6 +5,7 @@ var fullOutputString = ""; // to properly retain tabs and newline characters (tr
 var historyStack = []; // to be able to "undo"
 var searchWord = ""; // to be able to edit inside functions, etc.
 var delayTimeMin = 2000;
+var delayTimer;
 var timeCurr, timePrev;
 var timePrev = new Date().getTime();
 var numLines = 0;
@@ -26,7 +27,7 @@ function parseCommand() {
         
     } else {
         
-        //command = addSpaceIfDelay(command); // TODO
+        command = addSpaceIfDelay(command); // TODO
         
         var checkValid = checkValidCommand(command);
         
@@ -96,20 +97,30 @@ function deleteImproperlyStartedCommand(command) {
 }
 
 function addSpaceIfDelay(command) {
-    /* TRY TO ADD SPACE TO END OF TEXT IF PAUSED (TO AID WHEN VOICE COMMAND PAUSES MID-SENTENCE AND DOESN'T ADD A SPACE FOR THE NEXT WORD.)
-     * (Because pauses usually happen between words, add a space when there's a pause. Mac Dictation doesn't add a space.)
+    /*
+     * If the user paused talking for a bit, try to add a space after the last word.
+     * Breaks can happend mid-sentence, in between words.
+     * Mac Dictation doesn't automatically add a space between pauses in input speech.
      */
-    if (command.length > 1 && command.substring(command.length-1) !== " ") {
-        timeCurr = new Date().getTime();
-        if (timeCurr - timePrev > delayTimeMin) {
-            // add space before next word
-            document.getElementById("inputStr").value = command.substring(0,command.length-1) + " " + command.substring(command.length-1);
-        }
-        timePrev = new Date().getTime(); // reset previous value at every keystroke
-    }
-    /* TODO: may need to use threads. this doesn't seem to work with dictation yet.
-     */
+    resetDelayTimer();
     return command;
+}
+
+function resetDelayTimer() {
+    clearTimeout(delayTimer);
+    delayTimer = setInterval(function(){addSpace();}, delayTimeMin);
+}
+
+function addSpace() {
+    var commandStringSoFar = document.getElementById("inputStr").value;
+    // add space after last word if there isn't a space already
+    if (commandStringSoFar.substr(-1) !== " ") {
+        document.getElementById("inputStr").value += " "; // change interface's input box text
+        // check for invalid command
+        if (commandStringSoFar.substr(0,8) !== "computer") {
+            document.getElementById("inputStr").value = ""; // change interface's input box text
+        }
+    }
 }
 
 function checkValidCommand(command) {
@@ -301,7 +312,7 @@ function identifyCommand(command) {
                 return [command, name];
             }
             
-            var checkClearAll = command.match(/computer clear (all |everything )please/);
+            var checkClearAll = command.match(/computer (let's )?(clear |delete )(all |everything )please/);
             if (checkClearAll) {
                 command = "clear all";
                 name = "";

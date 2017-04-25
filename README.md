@@ -23,4 +23,4 @@ Mac Dictation —> interface.html’s inputStr’s oninput —> brain.js’s (pa
 
 ## check out another related project:
 
-[https://github.com/hchiam/verbal_lang](https://github.com/hchiam/verbal_lang)
+[https://github.com/hchiam/please](https://github.com/hchiam/please)

@@ -20,3 +20,7 @@ After clicking in the textbox, start up Mac Dictation and say something like "co
 Mac Dictation —> interface.html’s inputStr’s oninput —> brain.js’s (parseCommand —> checkValidCommand —> identifyCommand —> runCommand) —> interface.html’s outputStr
 
 (style.css is for the styles applied to different elements in interface.html, including important properties like hidden/visibility, opacity of overlapping elements, formatting, etc.)
+
+## check out another project:
+
+[https://github.com/hchiam/verbal_lang](https://github.com/hchiam/verbal_lang)

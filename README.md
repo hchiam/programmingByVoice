@@ -20,6 +20,8 @@ Mac Dictation —> interface.html’s inputStr’s oninput —> brain.js’s (pa
 
 (style.css is for the styles applied to different elements in interface.html, including important properties like hidden/visibility, opacity of overlapping elements, formatting, etc.)
 
-# Check Out Another Related Project:
+# Check Out Related Projects:
 
 [https://github.com/hchiam/please](https://github.com/hchiam/please)
+
+https://github.com/hchiam/language-user-interface

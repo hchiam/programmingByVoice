@@ -27,3 +27,5 @@ Mac Dictation —> interface.html’s inputStr’s oninput —> brain.js’s (pa
 [https://github.com/hchiam/please](https://github.com/hchiam/please)
 
 https://github.com/hchiam/language-user-interface
+
+https://github.com/hchiam/code-tutor

@@ -1,7 +1,5 @@
 # Programming By Voice
 
-[![HitCount](http://hits.dwyl.io/hchiam/programmingByVoice.svg)](http://hits.dwyl.io/hchiam/programmingByVoice)
-
 Combine Mac Dictation with a GUI in your browser to write code by voice command.
 
 Try it in your browser: [http://codepen.io/hchiam/full/evbOdv](http://codepen.io/hchiam/full/evbOdv)
